@@ -1,0 +1,80 @@
+# --------------------------
+# Python Bytecode & Cache
+# --------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --------------------------
+# Virtual Environment Folders
+# --------------------------
+.venv/
+venv/
+env/
+ENV/
+.env/
+.prompt-engg/
+
+# --------------------------
+# Jupyter Notebook Checkpoints
+# --------------------------
+.ipynb_checkpoints/
+
+# --------------------------
+# Chroma Vector DB Folder
+# --------------------------
+vector_db/
+
+# --------------------------
+# VSCode and JetBrains IDEs
+# --------------------------
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# --------------------------
+# macOS System Files
+# --------------------------
+.DS_Store
+
+# --------------------------
+# Build / Distribution / Packaging
+# --------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+*.manifest
+*.spec
+
+# --------------------------
+# Test, Logs, and Coverage Reports
+# --------------------------
+.pytest_cache/
+.cache/
+.coverage
+coverage.xml
+nosetests.xml
+*.cover
+htmlcov/
+
+# --------------------------
+# Model Weights / Large Temp Files (Optional)
+# --------------------------
+*.pth
+*.pt
+*.ckpt
+*.tar.gz
+*.log
+
+# --------------------------
+# Other Misc Files (Optional)
+# --------------------------
+*.log
+*.tmp
+*.sqlite3
+*.db
+
+
+

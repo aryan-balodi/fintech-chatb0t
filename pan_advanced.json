@@ -1,0 +1,291 @@
+{
+  "category": "ONBOARDING KYC/AML",
+  "service_name": "PAN ADVANCED",
+  "description": "This service helps you verify the PAN number alongwith sharing additonal demographic and contactability details like full name, father's name, DOB, address, Aadhaar linkage status, PAN category, and gender. It is intended for thorough KYC and onboarding processes.",
+  "llm_summary": "PAN ADVANCED performs high-assurance PAN validation for identity verification and onboarding. Requires user consent and returns personal and demographic details including Aadhaar link status.",
+  "tags": [
+    "pan verification",
+    "kyc",
+    "identity check",
+    "aadhaar link",
+    "demographic verification",
+    "onboarding api",
+    "compliance"
+  ],
+  "use_cases": [
+    "Verify PAN accuracy during customer onboarding.",
+    "Check for Aadhaar linkage as part of KYC process.",
+    "Demographic verification for fraud prevention in consumer lending.",
+    "Compliance-driven PAN validation for mutual fund onboarding or investment platforms."
+],
+  "request_schema": [
+    {
+      "field": "panNumber",
+      "type": "string",
+      "description": "PAN (Permanent Account Number) to validate.",
+      "validations": {
+        "minLength": 10,
+        "maxLength": 10,
+        "pattern": "[A-Za-z]{5}\\d{4}[A-Za-z]{1}"
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for data processing",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    },
+    {
+      "field": "client_request_id",
+      "type": "string",
+      "description": "Unique client request identifier",
+      "validations": {
+        "pattern": "^[A-Za-z0-9]+$",
+        "maxLength": 50
+      },
+      "required": false
+    }
+  ],
+  "response_schema": [
+    {
+      "field": "panNumber",
+      "type": "string",
+      "description": "PAN (Permanent Account Number)",
+      "validations": {
+        "length": 10,
+        "pattern": "alphanumeric"
+      },
+      "required": true
+    },
+    {
+      "field": "fullName",
+      "type": "string",
+      "description": "Full name of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": true
+    },
+    {
+      "field": "firstName",
+      "type": "string",
+      "description": "First name of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": true
+    },
+    {
+      "field": "middleName",
+      "type": "string",
+      "description": "Middle name of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "lastName",
+      "type": "string",
+      "description": "Last name of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "fatherName",
+      "type": "string",
+      "description": "Father's name of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "gender",
+      "type": "string",
+      "description": "Gender of the individual",
+      "validations": {
+        "enum": ["male", "female"]
+      },
+      "required": true
+    },
+    {
+      "field": "dob",
+      "type": "string",
+      "description": "Date of birth (YYYY-MM-DD format)",
+      "validations": {
+        "pattern": "date format"
+      },
+      "required": true
+    },
+    {
+      "field": "address",
+      "type": "string",
+      "description": "Full address of the individual",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressBuildingName",
+      "type": "string",
+      "description": "Name of the building in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressLocality",
+      "type": "string",
+      "description": "Locality in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressStreetName",
+      "type": "string",
+      "description": "Street name in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressPinCode",
+      "type": "string",
+      "description": "Pin code in the address",
+      "validations": {
+        "pattern": "6 digits"
+      },
+      "required": false
+    },
+    {
+      "field": "addressCity",
+      "type": "string",
+      "description": "City in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressState",
+      "type": "string",
+      "description": "State in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "addressCountry",
+      "type": "string",
+      "description": "Country in the address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "fullAddress",
+      "type": "string",
+      "description": "Concatenated full address",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "aadhaarLinked",
+      "type": "string",
+      "description": "Aadhaar linking status",
+      "validations": {
+        "enum": ["Yes", "No"]
+      },
+      "required": false
+    },
+    {
+      "field": "maskedAadhaar",
+      "type": "string",
+      "description": "Masked Aadhaar number",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": false
+    },
+    {
+      "field": "panStatus",
+      "type": "string",
+      "description": "Status of the PAN",
+      "validations": {
+        "enum": ["Active", "Inactive", "etc."]
+      },
+      "required": true
+    },
+    {
+      "field": "panCategory",
+      "type": "string",
+      "description": "Category of the PAN holder",
+      "validations": {
+        "pattern": "Individual, Business, etc."
+      },
+      "required": false
+    },
+    {
+      "field": "statusCode",
+      "type": "string",
+      "description": "Status code of the result",
+      "validations": {
+        "pattern": "alphanumeric"
+      },
+      "required": true
+    }
+  ],
+  "example_request": {
+    "input": {
+      "panNumber": "CDZPP6767P",
+      "consent": true
+    },
+    "client_request_id": "test5"
+  },
+  "example_response": {
+    "panNumber": "ABCDE1234F",
+    "fullName": "JOHN DOE",
+    "firstName": "JOHN",
+    "middleName": "MIDDLE",
+    "lastName": "DOE",
+    "fatherName": "JANE DOE",
+    "gender": "male",
+    "dob": "1980-05-15",
+    "address": "123 Main Street, Apt 456, Downtown",
+    "addressBuildingName": "Main Plaza",
+    "addressLocality": "Downtown",
+    "addressStreetName": "Main Street",
+    "addressPinCode": "560001",
+    "addressCity": "Bangalore",
+    "addressState": "Karnataka",
+    "addressCountry": "India",
+    "fullAddress": "123 Main Street, Apt 456, Downtown, Bangalore, Karnataka, 560001, India",
+    "aadhaarLinked": "Yes",
+    "maskedAadhaar": "XXXX-XXXX-1234",
+    "panStatus": "Active",
+    "panCategory": "Individual",
+    "statusCode": "SUCCESS"
+  },
+  "integration": {
+    "api_endpoint": "https://testapi.tenacio.io/api/v1/services/pan-advanced",
+    "http_method": "POST",
+    "auth_required": true
+  }
+}
+
