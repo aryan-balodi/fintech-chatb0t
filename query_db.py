@@ -13,24 +13,21 @@ print('🔄 Loading "fintech_services" collection...')
 collection = client.get_or_create_collection(name="fintech_services")
 print('✅ Collection "fintech_services" ready!\n')
 
-# Get user query and start retrieval
-user_query = input("🔍 Enter your query: ")
+def get_relevant_chunks(query: str, top_k: int = 5) -> list[str]:
+    """
+    Retrieves the top-k relevant chunks from your vector database based on the user query.
+    """
+    print(f"\n🔍 Retrieving {top_k} chunks for query: {query}")
 
-print("🔄 Embedding user query...")
-query_embedding = model.encode(user_query).tolist()
-print("✅ Query embedded!\n")
+    embedding = model.encode(query).tolist()
 
-print(f"🔄 Performing similarity search in ChromaDB...")
-results = collection.query(
-    query_embeddings=[query_embedding],
-    n_results=5  # Adjust as desired
-)
-print("✅ Retrieval complete!\n")
+    results = collection.query(
+        query_embeddings=[embedding],
+        n_results=top_k,
+    )
 
-print("🎯 Top Retrieved Chunks:\n")
-for i, (doc, meta) in enumerate(zip(results["documents"][0], results["metadatas"][0])):
-    print(f"Result {i+1}:")
-    print("Content:")
-    print(doc)
-    print("Metadata:", meta)
-    print("-" * 80)
+    documents = results.get("documents", [[]])[0]
+    return documents
+          
+
+
