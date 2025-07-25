@@ -1,0 +1,340 @@
+{
+  "category": "Employment verification",
+  "service_name": "UAN BASIC",
+  "description": "This service helps you find the company details using DIN (MCA based).",
+  "llm_summary": "Employment verification (UAN BASIC) using DIN provides detailed company and employment information mapped to UANs, including employer details, employment status, and confidence scores. Enables verification of employment through MCA and EPFO data linkage.",
+  "tags": [
+    "employment verification",
+    "uan verification",
+    "din lookup",
+    "company details",
+    "mca based",
+    "employee status",
+    "employer details",
+    "compliance"
+  ],
+  "use_cases": [
+    "Find company details linked to a UAN using DIN for employment verification.",
+    "Retrieve recent employer and employment details including dates and confidence scores.",
+    "Validate employment status and match employee/employer data for compliance checks.",
+    "Support HR and payroll systems with accurate employment records linked to official MCA filings.",
+    "Assist onboarding and KYC workflows with employment verification from trusted government data."
+  ],
+  "request_schema": [
+    {
+      "field": "din",
+      "type": "string",
+      "description": "Director Identification Number",
+      "validations": {
+        "pattern": "^[A-Za-z0-9]{8}$|^[A-Za-z0-9]{10}$"
+      },
+      "required": true
+    },
+    {
+      "field": "client_request_id",
+      "type": "string",
+      "description": "Unique identifier for the client request",
+      "validations": {
+        "pattern": "^[a-zA-Z0-9]+$",
+        "minLength": 1
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [
+    {
+      "field": "recentEmployerData",
+      "type": "object",
+      "description": "Recent employer details",
+      "required": true,
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "description": "Member ID",
+          "validations": {
+            "pattern": "^[a-zA-Z0-9]+$"
+          },
+          "required": true
+        },
+        "establishmentId": {
+          "type": "string",
+          "description": "Establishment ID",
+          "validations": {
+            "pattern": "^[a-zA-Z0-9]+$"
+          },
+          "required": true
+        },
+        "dateOfExit": {
+          "type": "string",
+          "description": "Date of exit",
+          "validations": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "required": false
+        },
+        "dateOfJoining": {
+          "type": "string",
+          "description": "Date of joining",
+          "validations": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "required": true
+        },
+        "establishmentName": {
+          "type": "string",
+          "description": "Name of the establishment",
+          "validations": {
+            "pattern": "^[a-zA-Z0-9 ]+$"
+          },
+          "required": true
+        },
+        "employerConfidenceScore": {
+          "type": ["integer", "null"],
+          "description": "Confidence score for employer verification",
+          "required": false
+        }
+      }
+    },
+    {
+      "field": "matchingUan",
+      "type": "string",
+      "description": "Matching UAN (masked format)",
+      "validations": {
+        "pattern": "^X{3}\\d{9}$"
+      },
+      "required": true
+    },
+    {
+      "field": "isEmployed",
+      "type": "boolean",
+      "description": "Employment status",
+      "required": true
+    },
+    {
+      "field": "employeeNameMatch",
+      "type": ["boolean", "null"],
+      "description": "Whether employee name matches",
+      "required": false
+    },
+    {
+      "field": "employerNameMatch",
+      "type": ["boolean", "null"],
+      "description": "Whether employer name matches",
+      "required": false
+    },
+    {
+      "field": "uanCount",
+      "type": "integer",
+      "description": "Number of UANs found",
+      "validations": {
+        "minimum": 1
+      },
+      "required": true
+    },
+    {
+      "field": "dateOfExitMarked",
+      "type": "boolean",
+      "description": "Indicates if exit date is marked",
+      "required": true
+    },
+    {
+      "field": "uanDetails",
+      "type": "object",
+      "description": "Contains UAN details",
+      "required": true,
+      "properties": {
+        "basicDetails": {
+          "type": "object",
+          "description": "Basic details of UAN",
+          "required": true,
+          "properties": {
+            "gender": {
+              "type": "string",
+              "description": "Gender of employee",
+              "validations": {
+                "enum": ["MALE", "FEMALE", "OTHER"]
+              },
+              "required": true
+            },
+            "dateOfBirth": {
+              "type": "string",
+              "description": "Date of birth",
+              "validations": {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "required": true
+            },
+            "employeeConfidenceScore": {
+              "type": ["integer", "null"],
+              "description": "Confidence score for employee verification",
+              "required": false
+            },
+            "name": {
+              "type": "string",
+              "description": "Employee name",
+              "validations": {
+                "pattern": "^[a-zA-Z0-9 ]+$"
+              },
+              "required": true
+            },
+            "mobile": {
+              "type": "string",
+              "description": "Mobile number",
+              "validations": {
+                "pattern": "^\\d{10}$"
+              },
+              "required": false
+            },
+            "aadhaarVerificationStatus": {
+              "type": "integer",
+              "description": "Aadhaar verification status (-1 for unverified, 1 for verified)",
+              "validations": {
+                "enum": [-1, 1]
+              },
+              "required": true
+            }
+          }
+        },
+        "employmentDetails": {
+          "type": "object",
+          "description": "Employment details for the UAN",
+          "required": true,
+          "properties": {
+            "memberId": {
+              "type": "string",
+              "description": "Member ID",
+              "validations": {
+                "pattern": "^[a-zA-Z0-9]+$"
+              },
+              "required": true
+            },
+            "establishmentId": {
+              "type": "string",
+              "description": "Establishment ID",
+              "validations": {
+                "pattern": "^[a-zA-Z0-9]+$"
+              },
+              "required": true
+            },
+            "dateOfExit": {
+              "type": "string",
+              "description": "Date of exit",
+              "validations": {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "required": false
+            },
+            "dateOfJoining": {
+              "type": "string",
+              "description": "Date of joining",
+              "validations": {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "required": true
+            },
+            "leaveReason": {
+              "type": "string",
+              "description": "Reason for leaving",
+              "validations": {
+                "pattern": "^[a-zA-Z0-9 ]*$"
+              },
+              "required": false
+            },
+            "establishmentName": {
+              "type": "string",
+              "description": "Establishment name",
+              "validations": {
+                "pattern": "^[a-zA-Z0-9 ]+$"
+              },
+              "required": true
+            },
+            "employerConfidenceScore": {
+              "type": ["integer", "null"],
+              "description": "Confidence score for employer verification",
+              "required": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "field": "statusCode",
+      "type": "string",
+      "description": "API response status code",
+      "required": false
+    }
+  ],
+  "example_request": {
+    "input": {
+    "mobileNumber": "8888888888"
+  },
+  "client_request_id": "sample_request_123"
+  },
+  "example_response": {
+    "status": "success",
+  "request_id": "f043f9f0-9b49-4a6e-8e04-06db1d3e47f0",
+  "client_request_id": "1",
+  "data": {
+    "status": "success",
+    "result": {
+      "Result": {
+        "recentEmployerData": {
+          "memberId": "UPALD00339780000034847",
+          "establishmentId": "UPALD0033978000",
+          "dateOfExit": "2022-03-02",
+          "dateOfJoining": "2022-03-02",
+          "establishmentName": "M/S U.P.PURVA SAINIK KALYAN NIGAM LTD.",
+          "matchingUan": "101351601124"
+        },
+        "isEmployed": false,
+        "employeeNameMatch": "0",
+        "employerNameMatch": "0",
+        "uanCount": 1,
+        "dateOfExitMarked": true
+      },
+      "uanDetails": {
+        "101351601124": {
+          "basic_details": {
+            "gender": "",
+            "date_of_birth": "",
+            "employee_confidence_score": null,
+            "name": "SANJAY KUMAR PANDEY",
+            "mobile": "",
+            "aadhaar_verification_status": -1
+          },
+          "employment_details": {
+            "member_id": "UPALD00339780000034847",
+            "establishment_id": "UPALD0033978000",
+            "date_of_exit": "2022-03-02",
+            "date_of_joining": "2022-03-02",
+            "leave_reason": "CESSATION (SHORT SERVICE) - Any other reason",
+            "establishment_name": "M/S U.P.PURVA SAINIK KALYAN NIGAM LTD.",
+            "employer_confidence_score": null
+          }
+        }
+      },
+      "statusCode": "200"
+    },
+    "vendorResponse": [
+      {
+        "statusCode": 200,
+        "name": "Surepass"
+      }
+    ],
+    "metadata": {
+      "latency": "4.54 Secs"
+    }
+  }
+  },
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

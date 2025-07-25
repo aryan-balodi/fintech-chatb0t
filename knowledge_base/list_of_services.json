@@ -1,0 +1,50 @@
+{
+  "description": "This file contains a catalog of all available fintech platform services, listing each service by a unique technical name and a user-friendly display name. It serves as a reference for service discovery, integration, and user interface representation.",
+  "llm_summary": "The services list provides a concise registry of all fintech APIs and services available on the platform, including their system identifiers and display names. This facilitates streamlined service lookup and management within the ecosystem.",
+  "status": "success",
+  "request_id": "4b4ab5ec-e58f-4da5-a927-e66f5c241918",
+  "data": {
+    "headers": [
+      {
+        "key": "name",
+        "label": "Service Name"
+      },
+      {
+        "key": "displayName",
+        "label": "Display Name"
+      }
+    ],
+    "rowData": [
+      {
+        "name": "pan-advanced",
+        "displayName": "PAN Verification Advanced"
+      },
+      {
+        "name": "pan-to-gst",
+        "displayName": "GST using PAN"
+      },
+      {
+        "name": "pan-to-uan",
+        "displayName": "UAN using PAN"
+      },
+      {
+        "name": "mobile-to-uan",
+        "displayName": "UAN using Mobile Number"
+      },
+      {
+        "name": "uan-basic",
+        "displayName": "Employment Verification Basic"
+      },
+      {
+        "name": "gst-basic",
+        "displayName": "GST Basic Details"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 100,
+      "total": 6,
+      "pages": 1
+    }
+  }
+}

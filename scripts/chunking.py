@@ -12,7 +12,18 @@ def chunk_service_json(service_json):
     service_name = service_json.get('service_name', '')
 
     def build_chunk(name, content, ctype=None):
-        meta = {"category": category, "service_name": service_name}
+        meta = {"category": category, 
+                "service_name": service_name,
+        }
+
+        tags = service_json.get("tags", [])
+        if tags:
+            meta["tags"] = ', '.join(tags)
+
+        vendors = service_json.get("available_vendors", [])
+        if vendors:
+            meta["available_vendors"] = ', '.join(vendors)
+            
         if ctype:
             meta["type"] = ctype
         return {
@@ -28,12 +39,14 @@ def chunk_service_json(service_json):
     chunks.append(build_chunk("Service Name", service_name))
 
     # 3. Description sentences
-    for i, sent in enumerate(sentence_chunking(service_json.get("description", ""))):
-        chunks.append(build_chunk(f"Description Sentence {i+1}", sent))
+    desc = service_json.get("description", "").strip()
+    if desc:
+        chunks.append(build_chunk("Description", desc))
 
     # 4. LLM Summary sentences
-    for i, sent in enumerate(sentence_chunking(service_json.get("llm_summary", ""))):
-        chunks.append(build_chunk(f"LLM Summary Sentence {i+1}", sent))
+    llm_sum = service_json.get("llm_summary", "").strip()
+    if llm_sum:
+        chunks.append(build_chunk("LLM Summary", llm_sum))
 
     # 5. Use Cases
     for i, uc in enumerate(service_json.get("use_cases", [])):
@@ -43,6 +56,12 @@ def chunk_service_json(service_json):
     if service_json.get("tags"):
         tags_str = ', '.join(service_json["tags"])
         chunks.append(build_chunk("Tags", f"Tags: {tags_str}"))
+    
+    # 6.a Available Vendors
+    if service_json.get("available_vendors"):
+        vendors_str = ', '.join(service_json["available_vendors"])
+        chunks.append(build_chunk("Available Vendors", f"Available Vendors: {vendors_str}"))
+
 
     # 7. Request Schema Fields
     for field in service_json.get("request_schema", []):

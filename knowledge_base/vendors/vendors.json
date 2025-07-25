@@ -1,0 +1,44 @@
+{
+  "description": "This file provides a comprehensive list of all vendors integrated into the fintech platform, including their unique vendor IDs and names. It serves as a registry for vendor identification and reference across services and operational workflows.",
+  "llm_summary": "The vendor list enumerates all available service providers identified by unique vendor IDs and names, enabling easy lookup, management, and integration tracking within the fintech ecosystem.",
+  "status": "success",
+  "request_id": "74f6c2a8-f81c-4ab5-a7dd-d0d4243da232",
+  "data": [
+    {
+      "vendor_id": "ce3bc9ef-c755-4e50-8e9b-f0de8535fbeb",
+      "name": "OnyxWolf"
+    },
+    {
+      "vendor_id": "bdaaa731-77eb-46b2-8827-64c777655b6b",
+      "name": "SapphireSwan"
+    },
+    {
+      "vendor_id": "03a45194-fb9d-4ce3-8697-300b232eea96",
+      "name": "CobaltEagle"
+    },
+    {
+      "vendor_id": "5f29bd44-0a63-45ab-be68-83e0aa9535db",
+      "name": "SilverTiger"
+    },
+    {
+      "vendor_id": "5404d81f-e5d2-4d89-982c-9d65b1a0956b",
+      "name": "AzureRaven"
+    },
+    {
+      "vendor_id": "cce8821b-b297-4f70-9bf6-7447ae7c2f11",
+      "name": "ScarletPanther"
+    },
+    {
+      "vendor_id": "d517fa7f-2ba2-4f24-9d6f-87c443cd8791",
+      "name": "EmeraldWhale"
+    },
+    {
+      "vendor_id": "f134c43f-ddb6-4fe9-bd2d-5345c53791e9",
+      "name": "GoldenOtter"
+    },
+    {
+      "vendor_id": "12438b6e-5fb6-45b9-ba90-a3a609ced0bc",
+      "name": "CrimsonFalcon"
+    }
+  ]
+}

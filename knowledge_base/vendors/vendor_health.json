@@ -1,0 +1,211 @@
+{
+    "description": "This file summarizes the health metrics of all integrated vendors, displaying overall transaction volume, success rates, error distributions (2XX/4XX/5XX), user-side issue rates, and API latency percentiles. It enables monitoring of vendor reliability and performance for operational review and decision-making.",
+    "llm_summary": "The vendor health dataset provides a comparative snapshot of vendor performance across key parameters like transaction count, API reliability (success/failure rates), user-side issues, and detailed response latency statistics (including p50 to p99). This enables quick vendor benchmarking and health monitoring.",
+    "status": "success",
+    "data": {
+        "headers": [
+            {
+                "key": "serialNumber",
+                "label": " "
+            },
+            {
+                "key": "name",
+                "label": "Vendor"
+            },
+            {
+                "key": "totalTransactions",
+                "label": "Total Transactions"
+            },
+            {
+                "key": "successRate",
+                "label": "Success Rate"
+            },
+            {
+                "key": "userSideIssues",
+                "label": "User-side Issues"
+            },
+            {
+                "key": "twoXX",
+                "label": "2XX"
+            },
+            {
+                "key": "fourXX",
+                "label": "4XX"
+            },
+            {
+                "key": "fiveXX",
+                "label": "5XX"
+            },
+            {
+                "key": "avgLatency",
+                "label": "Avg Latency"
+            },
+            {
+                "key": "p50",
+                "label": "P50"
+            },
+            {
+                "key": "p75",
+                "label": "P75"
+            },
+            {
+                "key": "p90",
+                "label": "P90"
+            },
+            {
+                "key": "p95",
+                "label": "P95"
+            },
+            {
+                "key": "p99",
+                "label": "P99"
+            }
+        ],
+        "rowData": [
+            {
+                "serialNumber": 1,
+                "name": "CobaltEagle",
+                "totalTransactions": 172,
+                "successRate": "87.79%",
+                "userSideIssues": "7.56%",
+                "twoXX": 138,
+                "fourXX": 13,
+                "fiveXX": 21,
+                "avgLatency": "1.89 Secs",
+                "p50": "0.52 Secs",
+                "p75": "1.71 Secs",
+                "p90": "7.95 Secs",
+                "p95": "10.29 Secs",
+                "p99": "11.56 Secs"
+            },
+            {
+                "serialNumber": 2,
+                "name": "CrimsonFalcon",
+                "totalTransactions": 121,
+                "successRate": "91.74%",
+                "userSideIssues": "47.11%",
+                "twoXX": 54,
+                "fourXX": 57,
+                "fiveXX": 10,
+                "avgLatency": "4.44 Secs",
+                "p50": "1.93 Secs",
+                "p75": "8.73 Secs",
+                "p90": "11.41 Secs",
+                "p95": "14.14 Secs",
+                "p99": "15.44 Secs"
+            },
+            {
+                "serialNumber": 3,
+                "name": "AzureRaven",
+                "totalTransactions": 728,
+                "successRate": "86.95%",
+                "userSideIssues": "6.87%",
+                "twoXX": 582,
+                "fourXX": 50,
+                "fiveXX": 95,
+                "avgLatency": "3.44 Secs",
+                "p50": "1.60 Secs",
+                "p75": "5.71 Secs",
+                "p90": "8.01 Secs",
+                "p95": "9.54 Secs",
+                "p99": "10.25 Secs"
+            },
+            {
+                "serialNumber": 4,
+                "name": "SilverTiger",
+                "totalTransactions": 340,
+                "successRate": "83.82%",
+                "userSideIssues": "54.12%",
+                "twoXX": 101,
+                "fourXX": 184,
+                "fiveXX": 55,
+                "avgLatency": "2.51 Secs",
+                "p50": "0.32 Secs",
+                "p75": "2.39 Secs",
+                "p90": "5.07 Secs",
+                "p95": "10.02 Secs",
+                "p99": "20.04 Secs"
+            },
+            {
+                "serialNumber": 5,
+                "name": "SapphireSwan",
+                "totalTransactions": 39,
+                "successRate": "58.97%",
+                "userSideIssues": "7.69%",
+                "twoXX": 20,
+                "fourXX": 3,
+                "fiveXX": 16,
+                "avgLatency": "1.87 Secs",
+                "p50": "1.25 Secs",
+                "p75": "3.12 Secs",
+                "p90": "4.39 Secs",
+                "p95": "4.80 Secs",
+                "p99": "5.53 Secs"
+            },
+            {
+                "serialNumber": 6,
+                "name": "ScarletPanther",
+                "totalTransactions": 1218,
+                "successRate": "95.07%",
+                "userSideIssues": "64.45%",
+                "twoXX": 370,
+                "fourXX": 785,
+                "fiveXX": 60,
+                "avgLatency": "3.21 Secs",
+                "p50": "1.65 Secs",
+                "p75": "2.10 Secs",
+                "p90": "5.56 Secs",
+                "p95": "6.44 Secs",
+                "p99": "10.03 Secs"
+            },
+            {
+                "serialNumber": 7,
+                "name": "OnyxWolf",
+                "totalTransactions": 30,
+                "successRate": "63.33%",
+                "userSideIssues": "20.00%",
+                "twoXX": 13,
+                "fourXX": 6,
+                "fiveXX": 11,
+                "avgLatency": "1.66 Secs",
+                "p50": "1.35 Secs",
+                "p75": "1.61 Secs",
+                "p90": "1.68 Secs",
+                "p95": "2.25 Secs",
+                "p99": "7.86 Secs"
+            },
+            {
+                "serialNumber": 8,
+                "name": "EmeraldWhale",
+                "totalTransactions": 51,
+                "successRate": "90.20%",
+                "userSideIssues": "11.76%",
+                "twoXX": 40,
+                "fourXX": 6,
+                "fiveXX": 5,
+                "avgLatency": "0.68 Secs",
+                "p50": "0.68 Secs",
+                "p75": "0.70 Secs",
+                "p90": "0.79 Secs",
+                "p95": "1.10 Secs",
+                "p99": "2.13 Secs"
+            },
+            {
+                "serialNumber": 9,
+                "name": "GoldenOtter",
+                "totalTransactions": 126,
+                "successRate": "95.24%",
+                "userSideIssues": "50.00%",
+                "twoXX": 57,
+                "fourXX": 63,
+                "fiveXX": 6,
+                "avgLatency": "0.98 Secs",
+                "p50": "0.10 Secs",
+                "p75": "0.37 Secs",
+                "p90": "2.79 Secs",
+                "p95": "6.93 Secs",
+                "p99": "12.31 Secs"
+            }
+        ]
+    }
+}

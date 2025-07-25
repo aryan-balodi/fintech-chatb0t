@@ -1,0 +1,136 @@
+{
+  "category": "ONBOARDING BUISNESS",
+  "service_name": "PAN TO GST",
+  "description": "This service helps you find the GST number using the linked PAN number (GST based).",
+  "llm_summary": "PAN TO GST allows you to find GST numbers associated with a PAN. Requires explicit user consent and provides GSTIN details, status, and associated state(s) for business onboarding and verification workflows.",
+  "tags": [
+    "pan to gst",
+    "gst lookup",
+    "business onboarding",
+    "gst verification",
+    "pan mapping",
+    "compliance"
+  ],
+  "use_cases": [
+    "Retrieve all GST numbers associated with a given PAN for business onboarding.",
+    "Verify business GST registration during partner due diligence.",
+    "Check GST registration status and state mapping for compliance or reporting."
+  ],
+  "request_schema": [
+    {
+      "field": "panNumber",
+      "type": "string",
+      "description": "PAN number to fetch GST details.",
+      "validations": {
+        "minLength": 10,
+        "maxLength": 10,
+        "pattern": "[A-Za-z]{5}\\d{4}[A-Za-z]{1}"
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "Consent to fetch GST details.",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    },
+    {
+      "field": "client_request_id",
+      "type": "string",
+      "description": "Unique identifier for the client request.",
+      "validations": {
+        "pattern": "^[A-Za-z0-9]+$"
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [
+    {
+      "field": "statusCode",
+      "type": "string",
+      "description": "Status code for the result.",
+      "validations": {
+        "pattern": "numeric string"
+      },
+      "required": true
+    },
+    {
+      "field": "gstList",
+      "type": "array",
+      "description": "List of GST details associated with the PAN.",
+      "validations": {},
+      "required": true,
+      "items": {
+        "type": "object",
+        "schema": [
+          {
+            "field": "gstin",
+            "type": "string",
+            "description": "GST Identification Number.",
+            "validations": {
+              "length": 15,
+              "pattern": "alphanumeric"
+            },
+            "required": true
+          },
+          {
+            "field": "status",
+            "type": "string",
+            "description": "GST status.",
+            "validations": {
+              "enum": ["Active", "Inactive"]
+            },
+            "required": true
+          },
+          {
+            "field": "state",
+            "type": "string",
+            "description": "State associated with GST number.",
+            "validations": {
+              "pattern": "valid state name"
+            },
+            "required": true
+          }
+        ]
+      }
+    }
+  ],
+  "example_request": {
+  "input": {
+    "panNumber": "ABCDE1234F",
+    "consent": true
+  },
+  "client_request_id": "test123"
+  },
+  "example_response": {
+  "result": {
+    "gstList": [
+      {
+        "gstin": "12ABCDE1234F1Z5",
+        "status": "Active",
+        "state": "Karnataka"
+      },
+      {
+        "gstin": "34ABCDE1234F2Y8",
+        "status": "Inactive",
+        "state": "Maharashtra"
+      }
+    ]
+  },
+  "statusCode": "200"
+  },
+ "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

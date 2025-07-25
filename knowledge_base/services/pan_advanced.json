@@ -282,10 +282,16 @@
     "panCategory": "Individual",
     "statusCode": "SUCCESS"
   },
-  "integration": {
-    "api_endpoint": "https://testapi.tenacio.io/api/v1/services/pan-advanced",
-    "http_method": "POST",
-    "auth_required": true
-  }
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
 }
 
