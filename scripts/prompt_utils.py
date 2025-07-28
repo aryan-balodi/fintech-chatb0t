@@ -1,5 +1,3 @@
-# prompt_utils.py
-
 ALLOWED_CATEGORIES = [
     "KYC/AML",
     "Employment Verification",
@@ -175,4 +173,3 @@ def build_prompt(user_query, stage, session_context="", knowledge_chunks=""):
     prompt += f"USER'S REQUEST: {user_query}\n"
     prompt += "RESPOND USING THE SPECIFIED FORMATTING AND OUTPUT REQUIREMENTS ABOVE.\n"
     return prompt
-
