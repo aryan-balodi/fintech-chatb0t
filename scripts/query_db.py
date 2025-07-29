@@ -3,7 +3,9 @@ from sentence_transformers import SentenceTransformer
 
 
 print("🔄 Loading embedding model into memory...")
-model = SentenceTransformer("all-mpnet-base-v2")
+# BGE models are better for structured data and RAG applications
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+# Alternative: model = SentenceTransformer("BAAI/bge-large-en-v1.5") for better performance
 print("✅ Embedding model loaded!\n")
 
 

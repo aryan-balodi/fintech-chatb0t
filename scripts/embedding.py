@@ -3,7 +3,7 @@ import json
 from sentence_transformers import SentenceTransformer
 import chromadb
 from tqdm import tqdm
-from chunking import chunk_service_json  # Your chunking function/module
+from chunking import chunk_service_json, chunk_vendor_health_json  # Updated import
 
 
 def list_json_files(root_folder):
@@ -41,7 +41,11 @@ def main():
             print(f"⚠️  Skipping {file_path} due to error: {e}")
             continue
 
-        chunks = chunk_service_json(service_json)
+        # Use special chunking for vendor health data
+        if "vendor_health.json" in file_path:
+            chunks = chunk_vendor_health_json(service_json)
+        else:
+            chunks = chunk_service_json(service_json)
 
         relative_path = get_relative_path(root_folder, file_path)
         for chunk in chunks:
@@ -60,7 +64,9 @@ def main():
     print(f"Total chunks prepared: {len(documents)}")
 
     print("Loading embedding model...")
-    model = SentenceTransformer("all-mpnet-base-v2")
+    # BGE models are better for structured data and RAG applications
+    model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+    # Alternative: model = SentenceTransformer("BAAI/bge-large-en-v1.5") for better performance
 
     print("Generating embeddings for chunks...")
     embeddings = []

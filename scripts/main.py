@@ -3,7 +3,8 @@ from prompt_utils import (
     ALLOWED_VENDORS,
     ALLOWED_SERVICES,
     ALLOWED_CATEGORIES,
-    ALLOWED_HEALTH_METRICS
+    ALLOWED_HEALTH_METRICS,
+    CATEGORY_TO_SERVICES  # <-- import the mapping
 )
 from state_manager import SessionManager
 from query_db import get_relevant_chunks
@@ -36,12 +37,103 @@ def call_llm(prompt: str) -> str:
     return response.choices[0].message.content
 
 # === Retrieve Context from Vector DB ===
-def retrieve_context_chunks(user_query: str) -> str:
-    """Retrieves relevant context from the existing vector DB."""
-    chunks = get_relevant_chunks(user_query, top_k=5)
-    if not chunks:
+def retrieve_context_chunks(user_query: str, current_stage: str, session_context: str = "") -> str:
+    """Retrieves relevant context from the existing vector DB, with explicit vendor health retrieval for STAGE_3 and service filtering for STAGE_2."""
+    from prompt_utils import ALLOWED_VENDORS, ALLOWED_SERVICES, CATEGORY_TO_SERVICES
+    import re
+
+    # Helper to extract selected category from session context
+    def extract_selected_category(context):
+        match = re.search(r'"category"\s*:\s*"([A-Za-z/ ]+)"', context)
+        if match:
+            return match.group(1)
+        return None
+
+    # Helper to extract selected service from session context
+    def extract_selected_service(context):
+        match = re.search(r'"service"\s*:\s*"([A-Z_]+)"', context)
+        if match:
+            return match.group(1)
+        return None
+
+    # Helper to extract selected vendors from session context
+    def extract_selected_vendors(context):
+        # Try to find a list of vendors in JSON_OUTPUT
+        match = re.search(r'"vendors"\s*:\s*\[(.*?)\]', context, re.DOTALL)
+        if match:
+            vendors_str = match.group(1)
+            vendors = re.findall(r'"([A-Za-z]+)"', vendors_str)
+            return vendors
+        return []
+
+    chunks_result = get_relevant_chunks(user_query, top_k=5)
+    if not chunks_result or not chunks_result.get("documents"):
         return "No relevant context could be retrieved."
-    return "\n\n".join(chunks)
+    
+    documents = chunks_result.get("documents", [])
+    metadatas = chunks_result.get("metadatas", [])
+    
+    relevant_chunks = []
+
+    # For STAGE_2, filter services by selected category
+    if current_stage == "STAGE_2":
+        selected_category = extract_selected_category(session_context)
+        allowed_services = []
+        if selected_category and selected_category in CATEGORY_TO_SERVICES:
+            allowed_services = CATEGORY_TO_SERVICES[selected_category]
+        else:
+            allowed_services = ALLOWED_SERVICES
+        # Only include chunks for allowed services
+        for i, doc in enumerate(documents):
+            metadata = metadatas[i] if i < len(metadatas) else {}
+            for service in allowed_services:
+                if service.lower() in doc.lower():
+                    relevant_chunks.append(doc)
+                    break
+        if not relevant_chunks:
+            return "No relevant service data could be retrieved for the selected category."
+        return "\n\n".join(relevant_chunks)
+
+    # For STAGE_3, explicitly retrieve vendor health for all relevant vendors
+    if current_stage == "STAGE_3":
+        # Try to get the selected service from the session context
+        selected_service = extract_selected_service(session_context)
+        # For now, assume all vendors are available for all services (can be improved)
+        relevant_vendors = ALLOWED_VENDORS
+        # Try to get a more specific vendor list if present
+        selected_vendors = extract_selected_vendors(session_context)
+        if selected_vendors:
+            relevant_vendors = selected_vendors
+        
+        # For each vendor, retrieve their health chunk
+        for vendor in relevant_vendors:
+            vendor_query = f"{vendor} health metrics"
+            vendor_chunks = get_relevant_chunks(vendor_query, top_k=1)
+            vendor_docs = vendor_chunks.get("documents", [])
+            if vendor_docs and vendor_docs[0]:
+                relevant_chunks.append(vendor_docs[0])
+        # Also add any other relevant chunks from the original retrieval
+        for i, doc in enumerate(documents):
+            metadata = metadatas[i] if i < len(metadatas) else {}
+            if "vendor" in doc.lower() or "health" in doc.lower() or "metric" in doc.lower():
+                relevant_chunks.append(doc)
+        if not relevant_chunks:
+            return "No relevant vendor health data could be retrieved."
+        return "\n\n".join(relevant_chunks)
+
+    # For other stages, keep the old logic
+    for i, doc in enumerate(documents):
+        metadata = metadatas[i] if i < len(metadatas) else {}
+        # For STAGE_2, prioritize service information
+        if current_stage == "STAGE_2":
+            if "service" in doc.lower() or "pan" in doc.lower() or "gst" in doc.lower() or "uan" in doc.lower():
+                relevant_chunks.append(doc)
+        # For STAGE_4, include all relevant data
+        elif current_stage == "STAGE_4":
+            relevant_chunks.append(doc)
+    if not relevant_chunks:
+        return "No relevant context could be retrieved."
+    return "\n\n".join(relevant_chunks)
 
 # === External Guardrail Functions ===
 
@@ -103,7 +195,7 @@ while True:
     session_context = sm.get_context(session_id)
 
     # STEP 2: Retrieve relevant context chunks from vector DB for stages 2+
-    knowledge_chunks = retrieve_context_chunks(user_input) if current_stage in ["STAGE_2", "STAGE_3", "STAGE_4"] else ""
+    knowledge_chunks = retrieve_context_chunks(user_input, current_stage, session_context)
 
     # STEP 3: Build the LLM prompt with strict staging and whitelist instructions
     prompt = build_prompt(
