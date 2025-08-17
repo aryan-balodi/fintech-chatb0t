@@ -1,5 +1,5 @@
 {
-  "category": "Employment verification",
+  "category": "EMPLOYMENT VERIFICATION",
   "service_name": "UAN BASIC",
   "description": "This service helps you find the company details using DIN (MCA based).",
   "llm_summary": "Employment verification (UAN BASIC) using DIN provides detailed company and employment information mapped to UANs, including employer details, employment status, and confidence scores. Enables verification of employment through MCA and EPFO data linkage.",
