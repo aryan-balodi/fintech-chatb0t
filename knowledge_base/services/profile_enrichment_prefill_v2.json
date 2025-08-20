@@ -1,0 +1,137 @@
+{
+  "category": "Others (Credit Risk)",
+  "name": "Profile Enrichment (Prefill v2)",
+  "description": "This service provides an enhanced version of profile enrichment by pre-filling detailed user information such as personal details, PAN IDs, addresses, phone numbers, and email addresses based on the provided mobile number. It is designed to streamline onboarding and improve credit risk assessments.",
+  "llm_summary": "The Profile Enrichment (Prefill v2) service retrieves and pre-fills comprehensive user details, including personal information, PAN IDs, addresses, and contact details, using a mobile number for enhanced onboarding and credit risk evaluation.",
+  "tags": ["profile enrichment", "prefill", "credit risk", "onboarding", "user data", "enhanced"],
+  "use_cases": [
+    "Streamlining user onboarding with detailed pre-filled profiles.",
+    "Enhancing credit risk assessment with enriched and verified user data.",
+    "Reducing manual data entry errors during KYC and compliance processes."
+  ],
+  "request_schema": {
+    "input": {
+      "mobileNumber": "9870963498",
+      "consent": true
+    }
+  },
+  "response_schema": {
+    "status": "success",
+    "requestId": "a62a27db-772d-4ce8-bb2a-2315947231d2",
+    "type": "point",
+    "serviceStatusCode": 200,
+    "data": {
+      "timestamp": "2025-07-21T14:05:17.632Z",
+      "transactionId": "TXN-d2410376-b3d4-4da7-9664-15d837d9ade2",
+      "status": "success",
+      "personalInfo": {
+        "fullName": "PRANIL VINOD PALAN",
+        "firstName": "PRANIL",
+        "middleName": "VINOD",
+        "lastName": "PALAN",
+        "dateOfBirth": "23-05-1991",
+        "gender": "",
+        "age": "34",
+        "totalIncome": "",
+        "occupation": "",
+        "placeOfBirthInfo": {}
+      },
+      "panIds": [
+        {
+          "sequence": "1",
+          "reportedDate": "01-03-2023",
+          "idNumber": "CDZPP6767P"
+        }
+      ],
+      "nationalIDCard": [],
+      "otherIds": [
+        {
+          "sequence": "1",
+          "reportedDate": "30-11-2019",
+          "idNumber": "20100114873"
+        },
+        {
+          "sequence": "1",
+          "reportedDate": "30-11-2019",
+          "idNumber": "XXXXXXXXNCAh"
+        },
+        {
+          "sequence": "2",
+          "reportedDate": "31-07-2019",
+          "idNumber": "XXXXXXXX8906"
+        }
+      ],
+      "addressInfo": [
+        {
+          "sequence": "1",
+          "reportedDate": "15-07-2025",
+          "address": "3E-22 KALPATARU AURA L B S MARG MUMBAI 400086 MH",
+          "state": "MH",
+          "postalCode": "400086",
+          "type": ""
+        },
+        {
+          "sequence": "2",
+          "reportedDate": "15-07-2025",
+          "address": "LBS MARG GHATKOPAR WEST 400086 MH",
+          "state": "MH",
+          "postalCode": "400086",
+          "type": ""
+        },
+        {
+          "sequence": "3",
+          "reportedDate": "15-07-2025",
+          "address": "3E/22 KALPATARU AURA LBS MARG OPPOSITE R CITY MALL GHATKOPAR WEST MUMBAI MUMBAI 400004 MH",
+          "state": "MH",
+          "postalCode": "400004",
+          "type": ""
+        }
+      ],
+      "phoneInfo": [
+        {
+          "sequence": "1",
+          "typeCode": "H",
+          "reportedDate": "30-06-2025",
+          "number": "00919870963498"
+        },
+        {
+          "sequence": "2",
+          "typeCode": "H",
+          "reportedDate": "30-06-2025",
+          "number": "9870963498"
+        },
+        {
+          "sequence": "3",
+          "typeCode": "H",
+          "reportedDate": "30-06-2025",
+          "number": "49204920"
+        }
+      ],
+      "emailAddressInfo": [
+        {
+          "sequence": "1",
+          "reportedDate": "30-06-2025",
+          "emailAddress": "PRANIL.PALAN@METAMAP.COM"
+        },
+        {
+          "sequence": "2",
+          "reportedDate": "30-06-2025",
+          "emailAddress": "PRANIL.PALAN@RUBIQUE.COM"
+        },
+        {
+          "sequence": "3",
+          "reportedDate": "01-03-2023",
+          "emailAddress": "pranilpalan@gmail.com"
+        }
+      ]
+    },
+    "vendorResponse": [
+      {
+        "statusCode": 200,
+        "name": "AzureRaven",
+        "sequence": 1
+      }
+    ]
+  },
+  "available_vendors": ["AzureRaven", "DataEnrichPro", "ProfilePlus"]
+}

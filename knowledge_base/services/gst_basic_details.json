@@ -1,382 +1,301 @@
 {
-  "category": "ONBOARDING BUISNESS",
-  "service_name": "GST BASIC DETAILS",
-  "description": "This service helps you find the company details using DIN (MCA based).",
-  "llm_summary": "GST BASIC DETAILS retrieves company details based on a provided Director Identification Number (DIN) using MCA data. It returns official company information and can be used as part of business onboarding or compliance checks.",
+  "category": "ONBOARDING BUSINESS",
+  "service_name": "GST Basic Details",
+  "description": "This service retrieves GST details, including legal name, trade name, PAN, and business activities, for compliance and onboarding workflows.",
+  "llm_summary": "GST Basic Details provides comprehensive GST information, including legal and trade names, PAN, business activities, and jurisdiction details, aiding in business onboarding and compliance.",
   "tags": [
     "gst details",
-    "company verification",
-    "mca lookup",
-    "din lookup",
-    "business onboarding",
-    "compliance"
+    "business verification",
+    "compliance",
+    "onboarding api",
+    "taxpayer information",
+    "gstin lookup"
   ],
   "use_cases": [
-    "Obtain official company details using a director's DIN as part of business onboarding.",
-    "Validate company registration information using Ministry of Corporate Affairs data.",
-    "Assist in due diligence or fraud prevention by fetching company identity records from DIN."
+    "Validate GSTIN details during business onboarding.",
+    "Retrieve legal and trade names for compliance workflows.",
+    "Verify taxpayer type and GSTIN status for regulatory purposes.",
+    "Support due diligence with detailed GST information.",
+    "Ensure accurate business verification for financial services."
   ],
   "request_schema": [
     {
-      "field": "uan",
+      "field": "gstin",
       "type": "string",
-      "description": "Universal Account Number (UAN).",
+      "description": "GSTIN (Goods and Services Tax Identification Number) to fetch details.",
       "validations": {
-        "length": 12,
-        "pattern": "^[0-9]{12}$"
+        "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
       },
       "required": true
     },
     {
-      "field": "client_request_id",
-      "type": "string",
-      "description": "Unique identifier for the client request.",
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for accessing GST details.",
       "validations": {
-        "pattern": "^[A-Za-z0-9]+$"
+        "allowedValues": [true, false]
       },
       "required": true
     }
   ],
   "response_schema": [
     {
-      "field": "recentEmployerData",
-      "type": "object",
-      "description": "Recent employer details.",
-      "validations": {
-        "nonEmptyObject": true
-      },
-      "required": true,
-      "schema": [
-        {
-          "field": "memberId",
-          "type": "string",
-          "description": "Member ID.",
-          "validations": {
-            "pattern": "alphanumeric"
-          },
-          "required": true
-        },
-        {
-          "field": "establishmentId",
-          "type": "string",
-          "description": "Establishment ID.",
-          "validations": {
-            "pattern": "alphanumeric"
-          },
-          "required": true
-        },
-        {
-          "field": "dateOfExit",
-          "type": "string",
-          "description": "Date of exit.",
-          "validations": {
-            "pattern": "YYYY-MM-DD or empty"
-          },
-          "required": false
-        },
-        {
-          "field": "dateOfJoining",
-          "type": "string",
-          "description": "Date of joining.",
-          "validations": {
-            "pattern": "YYYY-MM-DD"
-          },
-          "required": true
-        },
-        {
-          "field": "establishmentName",
-          "type": "string",
-          "description": "Name of the establishment.",
-          "validations": {
-            "pattern": "alphanumeric and spaces"
-          },
-          "required": true
-        },
-        {
-          "field": "employerConfidenceScore",
-          "type": "integer",
-          "description": "Confidence score for employer verification.",
-          "validations": {
-            "pattern": "numeric or null"
-          },
-          "required": false
-        }
-      ]
-    },
-    {
-      "field": "matchingUan",
+      "field": "status",
       "type": "string",
-      "description": "Matching UAN.",
+      "description": "Overall status of the API response.",
       "validations": {
-        "pattern": "masked UAN format (XXX)"
+        "allowedValues": ["success", "error", "failed"]
       },
       "required": true
     },
     {
-      "field": "isEmployed",
-      "type": "boolean",
-      "description": "Employment status.",
+      "field": "requestId",
+      "type": "string",
+      "description": "Unique request ID generated by the API.",
       "validations": {
-        "allowedValues": [true, false]
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
       },
       "required": true
     },
     {
-      "field": "employeeNameMatch",
-      "type": ["boolean", "null"],
+      "field": "type",
+      "type": "string",
+      "description": "Type of verification performed.",
       "validations": {
-        "allowedValues": [true,false,null]
+        "allowedValues": ["point"]
       },
-      "description": "Whether employee name matches.",
-      "required": false
+      "required": true
     },
     {
-      "field": "employerNameMatch",
-      "type": ["boolean", "null"],
-      "validations": {
-        "allowedValues": [true,false,null]
-      },
-      "description": "Whether employer name matches.",
-      "required": false
-    },
-    {
-      "field": "uanCount",
+      "field": "serviceStatusCode",
       "type": "integer",
-      "description": "Number of UANs found.",
+      "description": "HTTP status code for the service.",
       "validations": {
-        "pattern": "positive integer"
+        "minimum": 100,
+        "maximum": 599
       },
       "required": true
     },
     {
-      "field": "dateOfExitMarked",
-      "type": "boolean",
-      "description": "Indicates if exit date is marked.",
-      "validations": {
-        "allowedValues": [true, false]
-      },
-      "required": true
-    },
-    {
-      "field": "uanDetails",
+      "field": "data",
       "type": "object",
-      "description": "Contains UAN details.",
-      "validations": {
-        "nonEmptyObject": true
-      },
-      "required": true
-    },
-    {
-      "field": "basicDetails",
-      "type": "object",
-      "description": "Basic details of UAN.",
-      "validations": {
-        "nonEmptyObject": true
-      },
-      "required": true,
-      "schema": [
-        {
-          "field": "gender",
+      "description": "GST details.",
+      "properties": {
+        "gstin": {
           "type": "string",
-          "description": "Gender of employee.",
-          "validations": {
-            "enum": ["MALE", "FEMALE", "OTHER"]
-          },
-          "required": true
+          "description": "GSTIN of the business."
         },
-        {
-          "field": "dateOfBirth",
+        "legalName": {
           "type": "string",
-          "description": "Date of birth.",
-          "validations": {
-            "pattern": "YYYY-MM-DD"
-          },
-          "required": true
+          "description": "Legal name of the business."
         },
-        {
-          "field": "employeeConfidenceScore",
-          "type": "integer",
-          "description": "Confidence score for employee verification.",
-          "validations": {
-            "pattern": "numeric or null"
-          },
-          "required": false
-        },
-        {
-          "field": "name",
+        "tradeName": {
           "type": "string",
-          "description": "Employee name.",
-          "validations": {
-            "pattern": "alphanumeric and spaces"
-          },
-          "required": true
+          "description": "Trade name of the business."
         },
-        {
-          "field": "mobile",
+        "panNumber": {
           "type": "string",
-          "description": "Mobile number.",
-          "validations": {
-            "pattern": "numeric or empty"
-          },
-          "required": false
+          "description": "PAN number associated with the GSTIN."
         },
-        {
-          "field": "aadhaarVerificationStatus",
-          "type": "integer",
-          "description": "Aadhaar verification status (-1 for unverified, 1 for verified).",
-          "validations": {
-            "allowedValues": [-1, 1]
-          },
-          "required": true
+        "constitutionOfBusiness": {
+          "type": "string",
+          "description": "Constitution of the business."
+        },
+        "taxPayerType": {
+          "type": "string",
+          "description": "Type of taxpayer."
+        },
+        "gstinStatus": {
+          "type": "string",
+          "description": "Status of the GSTIN."
+        },
+        "registrationDate": {
+          "type": "string",
+          "description": "Date of GST registration."
+        },
+        "cancellationDate": {
+          "type": "string",
+          "description": "Date of GST cancellation, if applicable."
+        },
+        "aadhaarValidation": {
+          "type": "object",
+          "description": "Aadhaar validation details.",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Aadhaar validation status."
+            },
+            "date": {
+              "type": "string",
+              "description": "Date of Aadhaar validation."
+            }
+          }
+        },
+        "eInvoicingStatus": {
+          "type": "boolean",
+          "description": "Indicates if e-invoicing is enabled."
+        },
+        "natureOfBusinessActivities": {
+          "type": "string",
+          "description": "Nature of business activities."
+        },
+        "natureOfCoreBusinessActivityCode": {
+          "type": "string",
+          "description": "Core business activity code."
+        },
+        "natureOfCoreBusinessActivityDescription": {
+          "type": "string",
+          "description": "Description of core business activity."
+        },
+        "jurisdiction": {
+          "type": "object",
+          "description": "Jurisdiction details.",
+          "properties": {
+            "centreJurisdiction": {
+              "type": "string",
+              "description": "Centre jurisdiction details."
+            },
+            "stateJurisdiction": {
+              "type": "string",
+              "description": "State jurisdiction details."
+            }
+          }
+        },
+        "principalAddress": {
+          "type": "object",
+          "description": "Principal address details.",
+          "properties": {
+            "fullAddress": {
+              "type": "string",
+              "description": "Full address of the business."
+            }
+          }
+        },
+        "fieldVisitConducted": {
+          "type": "string",
+          "description": "Indicates if a field visit was conducted."
+        },
+        "hsnDetails": {
+          "type": "object",
+          "description": "HSN details.",
+          "properties": {
+            "services": {
+              "type": "array",
+              "description": "List of HSN services.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "hsnCode": {
+                    "type": "string",
+                    "description": "HSN code."
+                  },
+                  "hsnDescription": {
+                    "type": "string",
+                    "description": "HSN description."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "lastUpdatedDate": {
+          "type": "string",
+          "description": "Last updated date of GST details."
         }
-      ]
+      },
+      "required": true
     },
     {
-      "field": "employmentDetails",
-      "type": "object",
-      "description": "Employment details for the UAN.",
-      "validations": {
-        "nonEmptyObject": true
-      },
-      "required": true,
-      "schema": [
-        {
-          "field": "memberId",
-          "type": "string",
-          "description": "Member ID.",
-          "validations": {
-            "pattern": "alphanumeric"
+      "field": "vendorResponse",
+      "type": "array",
+      "description": "Response details from vendors.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "Vendor-specific status code."
           },
-          "required": true
-        },
-        {
-          "field": "establishmentId",
-          "type": "string",
-          "description": "Establishment ID.",
-          "validations": {
-            "pattern": "alphanumeric"
+          "name": {
+            "type": "string",
+            "description": "Vendor name."
           },
-          "required": true
-        },
-        {
-          "field": "dateOfExit",
-          "type": "string",
-          "description": "Date of exit.",
-          "validations": {
-            "pattern": "YYYY-MM-DD or empty"
-          },
-          "required": false
-        },
-        {
-          "field": "dateOfJoining",
-          "type": "string",
-          "description": "Date of joining.",
-          "validations": {
-            "pattern": "YYYY-MM-DD"
-          },
-          "required": true
-        },
-        {
-          "field": "leaveReason",
-          "type": "string",
-          "description": "Reason for leaving.",
-          "validations": {
-            "pattern": "alphanumeric or empty"
-          },
-          "required": false
-        },
-        {
-          "field": "establishmentName",
-          "type": "string",
-          "description": "Establishment name.",
-          "validations": {
-            "pattern": "alphanumeric and spaces"
-          },
-          "required": true
-        },
-        {
-          "field": "employerConfidenceScore",
-          "type": "integer",
-          "description": "Confidence score for employer verification.",
-          "validations": {
-            "pattern": "numeric or null"
-          },
-          "required": false
+          "sequence": {
+            "type": "integer",
+            "description": "Vendor sequence number."
+          }
         }
-      ]
-    },
-    {
-      "field": "statusCode",
-      "type": "string",
-      "description": "API response status code.",
-      "validations": {
-        "pattern": "alphanumeric or empty"
       },
-      "required": false
+      "required": true
     }
   ],
   "example_request": {
-  "input": {
-    "mobileNumber": "8888888888"
-  },
-  "client_request_id": "sample_request_123"
+    "input": {
+      "gstin": "27AAACR5055K1Z7",
+      "consent": true
+    }
   },
   "example_response": {
     "status": "success",
-    "request_id": "f043f9f0-9b49-4a6e-8e04-06db1d3e47f0",
-    "client_request_id": "1",
+    "requestId": "d9ca5441-0de7-4b65-91e1-ab4df02dd844",
+    "type": "point",
+    "serviceStatusCode": 200,
     "data": {
-        "status": "success",
-        "result": {
-            "Result": {
-                "recentEmployerData": {
-                "memberId": "UPALD00339780000034847",
-                "establishmentId": "UPALD0033978000",
-                "dateOfExit": "2022-03-02",
-                "dateOfJoining": "2022-03-02",
-                "establishmentName": "M/S U.P.PURVA SAINIK KALYAN NIGAM LTD.",
-                "matchingUan": "101351601124"
-                },
-                "isEmployed": false,
-                "employeeNameMatch": "0",
-                "employerNameMatch": "0",
-                "uanCount": 1,
-                "dateOfExitMarked": true
-            },
-        
-            "uanDetails": {
-                "101351601124": {
-                    "basic_details": {
-                    "gender": "",
-                    "date_of_birth": "",
-                    "employee_confidence_score": null,
-                    "name": "SANJAY KUMAR PANDEY",
-                    "mobile": "",
-                    "aadhaar_verification_status": -1
-                    },
-                    "employment_details": {
-                        "member_id": "UPALD00339780000034847",
-                        "establishment_id": "UPALD0033978000",
-                        "date_of_exit": "2022-03-02",
-                        "date_of_joining": "2022-03-02",
-                        "leave_reason": "CESSATION (SHORT SERVICE) - Any other reason",
-                        "establishment_name": "M/S U.P.PURVA SAINIK KALYAN NIGAM LTD.",
-                        "employer_confidence_score": null
-                    }
-                }
-            },
-            "statusCode": "200"
-            },
-            "vendorResponse": [
-            {
-            "statusCode": 200,
-            "name": "Surepass"
-            }
-            ],
-            "metadata": {
-                "latency": "4.54 Secs"
-            }
-    }
+      "gstin": "27AAACR5055K1Z7",
+      "legalName": "RELIANCE INDUSTRIES LIMITED",
+      "tradeName": "RELIANCE INDUSTRIES LIMITED",
+      "panNumber": "AAACR5055K",
+      "constitutionOfBusiness": "Public Limited Company",
+      "taxPayerType": "Regular",
+      "gstinStatus": "Active",
+      "registrationDate": "2017-07-01",
+      "cancellationDate": "1800-01-01",
+      "aadhaarValidation": {
+        "status": "Yes",
+        "date": "2025-07-16"
+      },
+      "eInvoicingStatus": "true",
+      "natureOfBusinessActivities": "Factory / Manufacturing,Retail Business,Input Service Distributor (ISD),Bonded Warehouse,SEZ,Works Contract,Warehouse / Depot,Service Provision,Leasing Business,Office / Sale Office,Recipient of Goods or Services,Wholesale Business,EOU / STP / EHTP,Supplier of Services,Others,Export",
+      "natureOfCoreBusinessActivityCode": "MFT",
+      "natureOfCoreBusinessActivityDescription": "Manufacturer",
+      "jurisdiction": {
+        "centreJurisdiction": "State - CBIC,Zone - MUMBAI,Commissionerate - BELAPUR,Division - DIVISION IV,Range - RANGE-IV (Jurisdictional Office)",
+        "stateJurisdiction": "State - Maharashtra,Zone - RAIGAD,Division - RAIGAD-NORTH,Charge - URAN_701"
+      },
+      "principalAddress": {
+        "fullAddress": "5, TTC Industrial Area, 5, Reliance Corporate Park, Thane Belapur Road, Ghansoli, Navi Mumbai, Thane, Maharashtra, 400701",
+        "splitAddress": {
+          "district": "",
+          "state": "",
+          "stateCode": "",
+          "city": "",
+          "pincode": "",
+          "country": "",
+          "addressLine": ""
+        },
+        "buildingName": "",
+        "buildingNumber": "",
+        "street": "",
+        "locality": ""
+      },
+      "fieldVisitConducted": "No",
+      "hsnDetails": {
+        "services": [
+          {
+            "hsnCode": "",
+            "hsnDescription": ""
+          }
+        ]
+      },
+      "lastUpdatedDate": ""
+    },
+    "vendorResponse": [
+      {
+        "statusCode": 200,
+        "name": "AzureRaven",
+        "sequence": 1
+      }
+    ]
   },
   "available_vendors": [
     "OnyxWolf",

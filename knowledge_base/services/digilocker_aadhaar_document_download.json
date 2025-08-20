@@ -1,0 +1,61 @@
+{
+  "category": "ONBOARDING INDIVIDUAL",
+  "service_name": "Digilocker Aadhaar (Document Download)",
+  "description": "This service facilitates the download of Aadhaar XML documents from Digilocker using a session token. It ensures secure and compliant retrieval of Aadhaar data for onboarding workflows.",
+  "llm_summary": "Digilocker Aadhaar (Document Download) enables secure Aadhaar XML retrieval using a session token. It supports compliant onboarding workflows and ensures data security.",
+  "tags": [
+    "digilocker",
+    "aadhaar document download",
+    "session token",
+    "onboarding api",
+    "aadhaar xml",
+    "secure kyc",
+    "compliance"
+  ],
+  "use_cases": [
+    "Download Aadhaar XML documents for KYC and compliance workflows.",
+    "Facilitate secure Aadhaar data retrieval using Digilocker session tokens.",
+    "Ensure compliant onboarding processes with Aadhaar document verification.",
+    "Support seamless integration of Aadhaar document download in front-end applications.",
+    "Enable secure and efficient Aadhaar data handling for regulatory reporting."
+  ],
+  "request_schema": [
+    {
+      "field": "sessionToken",
+      "type": "string",
+      "description": "Session token for Digilocker document download",
+      "validations": {
+        "minLength": 1
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for downloading Aadhaar XML document",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [],
+  "example_request": {
+    "input": {
+      "sessionToken": "olDSb9aZbEvckL",
+      "consent": true
+    }
+  },
+  "example_response": null,
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

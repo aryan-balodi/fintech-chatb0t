@@ -1,38 +1,46 @@
 {
-  "category": "EMPLOYMENT VERIFICATION",
-  "service_name": "Pan to UAN (EPFO)",
-  "description": "This service retrieves the UAN (Universal Account Number) linked to a given PAN number, based on EPFO records. It facilitates employment verification and compliance workflows.",
-  "llm_summary": "Pan to UAN (EPFO) maps a PAN number to its associated UAN(s) using EPFO data, aiding in employment verification, compliance, and HR processes.",
+  "category": "ONBOARDING BUSINESS",
+  "service_name": "GST Turnover",
+  "description": "This service retrieves GST turnover details, including filed and estimated totals, for compliance and financial analysis workflows.",
+  "llm_summary": "GST Turnover provides detailed turnover information based on GSTIN and year, including filed and estimated totals, aiding in business onboarding and compliance.",
   "tags": [
-    "pan to uan",
-    "uan lookup",
-    "employment verification",
-    "epfo",
+    "gst turnover",
+    "business verification",
     "compliance",
-    "identity mapping"
+    "financial analysis",
+    "onboarding api",
+    "gstin lookup"
   ],
   "use_cases": [
-    "Verify UAN(s) linked to a PAN number for employee onboarding.",
-    "Ensure compliance with EPFO regulations during employment verification.",
-    "Assist HR systems in mapping PAN numbers to UANs for payroll processing.",
-    "Support identity validation workflows in employment and compliance checks."
+    "Retrieve GST turnover details for financial analysis.",
+    "Validate turnover information during business onboarding.",
+    "Support compliance workflows with accurate turnover data.",
+    "Assist in due diligence and risk assessment for financial services.",
+    "Ensure accurate business verification for regulatory purposes."
   ],
   "request_schema": [
     {
-      "field": "panNumber",
+      "field": "gstin",
       "type": "string",
-      "description": "PAN number to fetch UAN.",
+      "description": "GSTIN (Goods and Services Tax Identification Number) to fetch turnover details.",
       "validations": {
-        "pattern": "[A-Za-z]{5}\\d{4}[A-Za-z]{1}",
-        "minLength": 10,
-        "maxLength": 10
+        "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+      },
+      "required": true
+    },
+    {
+      "field": "year",
+      "type": "string",
+      "description": "Financial year for which turnover details are required.",
+      "validations": {
+        "pattern": "^\\d{4}-\\d{4}$"
       },
       "required": true
     },
     {
       "field": "consent",
       "type": "boolean",
-      "description": "User consent for accessing UAN details.",
+      "description": "User consent for accessing GST turnover details.",
       "validations": {
         "allowedValues": [true, false]
       },
@@ -80,23 +88,23 @@
     {
       "field": "data",
       "type": "object",
-      "description": "UAN details associated with the PAN number.",
+      "description": "GST turnover details.",
       "properties": {
-        "uan": {
+        "gstFiledTotal": {
           "type": "string",
-          "description": "Universal Account Number (UAN)."
+          "description": "Total GST filed turnover."
         },
-        "memberName": {
+        "panFiledTotal": {
           "type": "string",
-          "description": "Name of the EPFO member."
+          "description": "Total PAN filed turnover."
         },
-        "memberId": {
+        "gstEstimatedTotal": {
           "type": "string",
-          "description": "EPFO Member ID."
+          "description": "Total GST estimated turnover."
         },
-        "dob": {
+        "panEstimatedTotal": {
           "type": "string",
-          "description": "Date of birth of the EPFO member."
+          "description": "Total PAN estimated turnover."
         }
       },
       "required": true
@@ -127,25 +135,26 @@
   ],
   "example_request": {
     "input": {
-      "panNumber": "CDZPP6767P",
+      "gstin": "27AAACR5055K1Z7",
+      "year": "2024-2025",
       "consent": true
     }
   },
   "example_response": {
     "status": "success",
-    "requestId": "b893946b-1fbd-433a-8c65-6d9bf35137b0",
+    "requestId": "a22719ad-b132-4ba0-a260-cec85e43e53f",
     "type": "point",
     "serviceStatusCode": 200,
     "data": {
-      "uan": "100535944477",
-      "memberName": "Pranil Vinod Palan",
-      "memberId": "PUPUN19484600000010640",
-      "dob": "24/05/1991"
+      "gstFiledTotal": "",
+      "panFiledTotal": "6640677918090.72",
+      "gstEstimatedTotal": "",
+      "panEstimatedTotal": "6645262221131.91"
     },
     "vendorResponse": [
       {
         "statusCode": 200,
-        "name": "SilverTiger",
+        "name": "AzureRaven",
         "sequence": 1
       }
     ]

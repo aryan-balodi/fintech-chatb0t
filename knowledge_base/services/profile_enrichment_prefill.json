@@ -1,0 +1,86 @@
+{
+  "category": "Others (Credit Risk)",
+  "name": "Profile Enrichment (Prefill)",
+  "description": "This service enriches user profiles by pre-filling detailed information such as full name, date of birth, address, phone numbers, and email addresses based on the provided mobile number and name. It aids in streamlining onboarding and credit risk assessment processes.",
+  "llm_summary": "The Profile Enrichment (Prefill) service retrieves and pre-fills user details like name, address, and contact information using a mobile number and name, enhancing onboarding and credit risk evaluations.",
+  "tags": [
+    "profile enrichment", 
+    "prefill", 
+    "credit risk", 
+    "onboarding", 
+    "user data"
+  ],
+  "use_cases": [
+    "Streamlining user onboarding by pre-filling profile details.",
+    "Enhancing credit risk assessment with enriched user data.",
+    "Reducing manual data entry errors during KYC processes."
+  ],
+  "request_schema": {
+    "input": {
+      "mobileNumber": "9870963498",
+      "firstName": "Pranil",
+      "middleName": "Vinod",
+      "lastName": "Palan",
+      "consent": true
+    }
+  },
+  "response_schema": {
+    "status": "success",
+    "requestId": "94fdbadf-76dd-490f-9763-28a1d00a2045",
+    "type": "point",
+    "serviceStatusCode": 200,
+    "data": {
+      "fullName": "pranil vinod palan",
+      "firstName": "pranil",
+      "middleName": "vinod",
+      "lastName": "palan",
+      "DateOfBirth": "23-05-1991",
+      "gender": "",
+      "age": "34",
+      "pan": "CDZPP6767P",
+      "otherId": [
+        "20100114873",
+        "XXXXXXXXNCAh",
+        "XXXXXXXX8906"
+      ],
+      "voterId": "",
+      "nationalCard": "",
+      "passport": "",
+      "addressInfo": [
+        {
+          "fullAddress": "lbs marg ghatkopar west 400086 mh ",
+          "state": "MH",
+          "pinCode": "400086"
+        },
+        {
+          "fullAddress": "3e/22 kalpataru aura lbs marg opposite r city mall ghatkopar west mumbai mumbai 400004 mh ",
+          "state": "MH",
+          "pinCode": "400004"
+        },
+        {
+          "fullAddress": "metamap inc level 10,  wing c,  helios business park,  150,  bangalore 560103 ka ",
+          "state": "KA",
+          "pinCode": "560103"
+        }
+      ],
+      "phoneInfo": [
+        "00919870963498",
+        "9870963498",
+        "49204920"
+      ],
+      "emailInfo": [
+        "pranil.palan@metamap.com",
+        "pranil.palan@rubique.com",
+        "pranilpalan@gmail.com"
+      ]
+    },
+    "vendorResponse": [
+      {
+        "statusCode": 200,
+        "name": "SapphireSwan",
+        "sequence": 1
+      }
+    ]
+  },
+  "available_vendors": ["SapphireSwan", "DataEnrichPro", "ProfilePlus"]
+}

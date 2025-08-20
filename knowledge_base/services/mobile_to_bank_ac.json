@@ -1,0 +1,59 @@
+{
+  "category": "BANKING AND PAYMENTS",
+  "service_name": "Mobile to Bank AC",
+  "description": "This service maps a mobile number to its associated bank account(s) for verification purposes. It ensures compliance and supports seamless banking workflows.",
+  "llm_summary": "Mobile to Bank AC maps a mobile number to its linked bank account(s), aiding in banking verification, compliance, and fraud prevention.",
+  "tags": [
+    "mobile to bank account",
+    "banking",
+    "payments",
+    "fraud prevention",
+    "account mapping",
+    "compliance"
+  ],
+  "use_cases": [
+    "Map a mobile number to its associated bank account(s) for verification.",
+    "Ensure compliance with banking regulations during KYC processes.",
+    "Support fraud prevention by validating mobile-to-bank account mappings.",
+    "Facilitate seamless integration with banking and payment systems."
+  ],
+  "request_schema": [
+    {
+      "field": "mobileNumber",
+      "type": "string",
+      "description": "Mobile number to map to bank account(s).",
+      "validations": {
+        "pattern": "^\\d{10}$"
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for mapping the mobile number to bank account(s).",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [],
+  "example_request": {
+    "input": {
+      "mobileNumber": "9870963498",
+      "consent": true
+    }
+  },
+  "example_response": {},
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

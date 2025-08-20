@@ -1,38 +1,36 @@
 {
-  "category": "EMPLOYMENT VERIFICATION",
-  "service_name": "Pan to UAN (EPFO)",
-  "description": "This service retrieves the UAN (Universal Account Number) linked to a given PAN number, based on EPFO records. It facilitates employment verification and compliance workflows.",
-  "llm_summary": "Pan to UAN (EPFO) maps a PAN number to its associated UAN(s) using EPFO data, aiding in employment verification, compliance, and HR processes.",
+  "category": "BANKING AND PAYMENTS",
+  "service_name": "UPI Verification",
+  "description": "This service verifies the validity and details of a UPI ID, including the associated bank account and user information. It ensures secure payment processing and compliance.",
+  "llm_summary": "UPI Verification validates a UPI ID and retrieves associated details such as user name, bank name, and branch, aiding in secure payment processing and fraud prevention.",
   "tags": [
-    "pan to uan",
-    "uan lookup",
-    "employment verification",
-    "epfo",
-    "compliance",
-    "identity mapping"
+    "upi verification",
+    "banking",
+    "payments",
+    "fraud prevention",
+    "account validation",
+    "compliance"
   ],
   "use_cases": [
-    "Verify UAN(s) linked to a PAN number for employee onboarding.",
-    "Ensure compliance with EPFO regulations during employment verification.",
-    "Assist HR systems in mapping PAN numbers to UANs for payroll processing.",
-    "Support identity validation workflows in employment and compliance checks."
+    "Verify the validity of a UPI ID for payment processing.",
+    "Retrieve user and bank details associated with a UPI ID during onboarding or KYC processes.",
+    "Prevent fraud by validating UPI IDs before initiating transactions.",
+    "Support seamless integration with payment gateways and banking systems."
   ],
   "request_schema": [
     {
-      "field": "panNumber",
+      "field": "upiId",
       "type": "string",
-      "description": "PAN number to fetch UAN.",
+      "description": "UPI ID to verify.",
       "validations": {
-        "pattern": "[A-Za-z]{5}\\d{4}[A-Za-z]{1}",
-        "minLength": 10,
-        "maxLength": 10
+        "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+$"
       },
       "required": true
     },
     {
       "field": "consent",
       "type": "boolean",
-      "description": "User consent for accessing UAN details.",
+      "description": "User consent for verifying the UPI ID.",
       "validations": {
         "allowedValues": [true, false]
       },
@@ -80,23 +78,39 @@
     {
       "field": "data",
       "type": "object",
-      "description": "UAN details associated with the PAN number.",
+      "description": "Details of the UPI verification.",
       "properties": {
-        "uan": {
+        "upiName": {
           "type": "string",
-          "description": "Universal Account Number (UAN)."
+          "description": "Name associated with the UPI ID."
         },
-        "memberName": {
+        "bankName": {
           "type": "string",
-          "description": "Name of the EPFO member."
+          "description": "Name of the bank associated with the UPI ID."
         },
-        "memberId": {
+        "branch": {
           "type": "string",
-          "description": "EPFO Member ID."
+          "description": "Branch of the bank associated with the UPI ID."
         },
-        "dob": {
+        "mobile": {
           "type": "string",
-          "description": "Date of birth of the EPFO member."
+          "description": "Mobile number associated with the UPI ID."
+        },
+        "address": {
+          "type": "string",
+          "description": "Address of the bank branch associated with the UPI ID."
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the bank branch is located."
+        },
+        "district": {
+          "type": "string",
+          "description": "District where the bank branch is located."
+        },
+        "state": {
+          "type": "string",
+          "description": "State where the bank branch is located."
         }
       },
       "required": true
@@ -127,20 +141,24 @@
   ],
   "example_request": {
     "input": {
-      "panNumber": "CDZPP6767P",
+      "upiId": "pranilpalan@okhdfcbank",
       "consent": true
     }
   },
   "example_response": {
     "status": "success",
-    "requestId": "b893946b-1fbd-433a-8c65-6d9bf35137b0",
+    "requestId": "73047fed-22e9-4206-b29f-545fcf23a2c0",
     "type": "point",
     "serviceStatusCode": 200,
     "data": {
-      "uan": "100535944477",
-      "memberName": "Pranil Vinod Palan",
-      "memberId": "PUPUN19484600000010640",
-      "dob": "24/05/1991"
+      "upiName": "PRANIL VINOD PALAN",
+      "bankName": "HDFC Bank",
+      "branch": "FORT",
+      "mobile": "2261606161",
+      "address": "HDFC BANK LTD GROUND FLOOR JEHANGIR BUILDING M G ROAD FORT MUMBAI MAHARASHTRA 400001",
+      "city": "MUMBAI",
+      "district": "GREATER MUMBAI",
+      "state": "MAHARASHTRA"
     },
     "vendorResponse": [
       {

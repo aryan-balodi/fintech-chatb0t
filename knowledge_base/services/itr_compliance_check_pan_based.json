@@ -1,38 +1,38 @@
 {
-  "category": "EMPLOYMENT VERIFICATION",
-  "service_name": "Pan to UAN (EPFO)",
-  "description": "This service retrieves the UAN (Universal Account Number) linked to a given PAN number, based on EPFO records. It facilitates employment verification and compliance workflows.",
-  "llm_summary": "Pan to UAN (EPFO) maps a PAN number to its associated UAN(s) using EPFO data, aiding in employment verification, compliance, and HR processes.",
+  "category": "ONBOARDING INDIVIDUAL",
+  "service_name": "ITR Compliance Check (Pan based)",
+  "description": "This service checks the Income Tax Return (ITR) compliance status of an individual using their PAN number, ensuring regulatory adherence and financial transparency.",
+  "llm_summary": "ITR Compliance Check validates the compliance status of a PAN, including PAN-Aadhaar linkage, operability, and compliance with tax regulations.",
   "tags": [
-    "pan to uan",
-    "uan lookup",
-    "employment verification",
-    "epfo",
-    "compliance",
-    "identity mapping"
+    "ITR compliance",
+    "PAN verification",
+    "tax compliance",
+    "financial transparency",
+    "regulatory adherence",
+    "onboarding api",
+    "secure kyc"
   ],
   "use_cases": [
-    "Verify UAN(s) linked to a PAN number for employee onboarding.",
-    "Ensure compliance with EPFO regulations during employment verification.",
-    "Assist HR systems in mapping PAN numbers to UANs for payroll processing.",
-    "Support identity validation workflows in employment and compliance checks."
+    "Verify ITR compliance status during individual onboarding.",
+    "Ensure PAN-Aadhaar linkage for regulatory adherence.",
+    "Validate PAN operability and compliance for financial services.",
+    "Support tax-related workflows with accurate compliance data.",
+    "Enhance KYC processes with ITR compliance checks."
   ],
   "request_schema": [
     {
       "field": "panNumber",
       "type": "string",
-      "description": "PAN number to fetch UAN.",
+      "description": "Permanent Account Number (PAN) to verify.",
       "validations": {
-        "pattern": "[A-Za-z]{5}\\d{4}[A-Za-z]{1}",
-        "minLength": 10,
-        "maxLength": 10
+        "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
       },
       "required": true
     },
     {
       "field": "consent",
       "type": "boolean",
-      "description": "User consent for accessing UAN details.",
+      "description": "User consent for accessing ITR compliance data.",
       "validations": {
         "allowedValues": [true, false]
       },
@@ -80,23 +80,39 @@
     {
       "field": "data",
       "type": "object",
-      "description": "UAN details associated with the PAN number.",
+      "description": "ITR compliance details.",
       "properties": {
-        "uan": {
+        "panNumber": {
           "type": "string",
-          "description": "Universal Account Number (UAN)."
+          "description": "Permanent Account Number (PAN)."
         },
-        "memberName": {
+        "maskedName": {
           "type": "string",
-          "description": "Name of the EPFO member."
+          "description": "Masked name of the PAN holder."
         },
-        "memberId": {
+        "panAadhaarLinked": {
           "type": "string",
-          "description": "EPFO Member ID."
+          "description": "Status of PAN-Aadhaar linkage."
         },
-        "dob": {
+        "panStatus": {
           "type": "string",
-          "description": "Date of birth of the EPFO member."
+          "description": "Operability status of the PAN."
+        },
+        "validPan": {
+          "type": "string",
+          "description": "Indicates if the PAN is valid."
+        },
+        "compliant": {
+          "type": "string",
+          "description": "Indicates if the PAN is compliant with tax regulations."
+        },
+        "specifiedPersonUnder206": {
+          "type": "string",
+          "description": "Indicates if the PAN holder is a specified person under Section 206."
+        },
+        "panAllotmentDate": {
+          "type": "string",
+          "description": "Date of PAN allotment."
         }
       },
       "required": true
@@ -133,19 +149,23 @@
   },
   "example_response": {
     "status": "success",
-    "requestId": "b893946b-1fbd-433a-8c65-6d9bf35137b0",
+    "requestId": "525e54ea-8c88-4821-bd76-7848daaf23b5",
     "type": "point",
     "serviceStatusCode": 200,
     "data": {
-      "uan": "100535944477",
-      "memberName": "Pranil Vinod Palan",
-      "memberId": "PUPUN19484600000010640",
-      "dob": "24/05/1991"
+      "panNumber": "CDZPP6767P",
+      "maskedName": "PXXXXL VXXXD PXXXN",
+      "panAadhaarLinked": "linked",
+      "panStatus": "operative",
+      "validPan": "true",
+      "compliant": "true",
+      "specifiedPersonUnder206": "no",
+      "panAllotmentDate": ""
     },
     "vendorResponse": [
       {
         "statusCode": 200,
-        "name": "SilverTiger",
+        "name": "AzureRaven",
         "sequence": 1
       }
     ]
