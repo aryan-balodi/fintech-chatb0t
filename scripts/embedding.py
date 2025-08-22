@@ -1,9 +1,13 @@
 import os
+import sys
 import json
 from sentence_transformers import SentenceTransformer
 import chromadb
 from tqdm import tqdm
-from chunking import chunk_service_json, chunk_vendor_health_json  # Updated import
+
+# Add the scripts directory to the path to import local modules
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from chunking import chunk_service_json, chunk_vendor_health_json
 
 
 def list_json_files(root_folder):
@@ -22,7 +26,12 @@ def get_relative_path(root_folder, abspath):
 
 
 def main():
-    root_folder = './knowledge_base'  # Update path as needed
+    # Get the project root directory (parent of scripts)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    
+    root_folder = os.path.join(project_root, 'knowledge_base')
+    db_path = os.path.join(project_root, 'vector_db')
 
     print(f"Scanning for JSON files under: {root_folder}")
     json_files = list_json_files(root_folder)
@@ -75,9 +84,16 @@ def main():
         embeddings.append(emb.tolist())
 
     print("Connecting to ChromaDB and storing vectors...")
-    db_path = "./vector_db"
     client = chromadb.PersistentClient(path=db_path)
     collection = client.get_or_create_collection(name="fintech_services")
+
+    # Clear existing collection to avoid duplicates when re-running
+    try:
+        collection.delete()
+        collection = client.get_or_create_collection(name="fintech_services")
+        print("✅ Cleared existing collection for fresh data.")
+    except Exception as e:
+        print(f"⚠️  Note: Could not clear collection (might be empty): {e}")
 
     collection.add(
         documents=documents,

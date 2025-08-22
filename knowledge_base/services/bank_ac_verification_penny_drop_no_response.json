@@ -1,0 +1,205 @@
+{
+  "category": "BANKING AND PAYMENTS",
+  "service_name": "Bank AC Verification (Penny Drop)",
+  "description": "This service performs real-time bank account verification using the penny drop method, which validates account details by initiating a small transaction to verify account existence and holder information. It confirms account validity, retrieves account holder's full name, bank details, branch information, and ensures seamless payment processing and fraud prevention for banking and fintech applications.",
+  "llm_summary": "Bank AC Verification (Penny Drop) validates bank account details through real-time penny drop transactions. Returns account status, holder name verification, bank branch details, and MICR code for secure payment processing and fraud prevention in banking workflows.",
+  "tags": [
+    "bank account verification",
+    "penny drop",
+    "payment validation",
+    "account holder verification",
+    "banking compliance",
+    "fraud prevention",
+    "ifsc verification",
+    "micr validation",
+    "payment processing",
+    "account status check"
+  ],
+  "use_cases": [
+    "Real-time bank account verification for payment processing platforms.",
+    "Account holder name verification for fraud prevention and compliance.",
+    "Validation of beneficiary accounts before fund transfers and payments.",
+    "KYC compliance for banking and financial services onboarding.",
+    "Verification of vendor and supplier bank details for corporate payments.",
+    "Account validation for loan disbursement and EMI collection setup.",
+    "Customer bank account verification for e-commerce and marketplace platforms.",
+    "Bulk account verification for payroll and salary processing systems."
+  ],
+  "request_schema": [
+    {
+      "field": "mobileNumber",
+      "type": "string",
+      "description": "Mobile number associated with the bank account",
+      "validations": {
+        "minLength": 10,
+        "maxLength": 10,
+        "pattern": "\\d{10}"
+      },
+      "required": true
+    },
+    {
+      "field": "bankAccountNumber",
+      "type": "string",
+      "description": "Bank account number to verify",
+      "validations": {
+        "minLength": 9,
+        "maxLength": 18,
+        "pattern": "\\d{9,18}"
+      },
+      "required": true
+    },
+    {
+      "field": "ifscNumber",
+      "type": "string",
+      "description": "IFSC code of the bank branch",
+      "validations": {
+        "minLength": 11,
+        "maxLength": 11,
+        "pattern": "[A-Za-z]{4}0[A-Za-z0-9]{6}"
+      },
+      "required": true
+    },
+    {
+      "field": "name",
+      "type": "string",
+      "description": "Account holder's name for verification",
+      "validations": {
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for bank account verification and data processing",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [
+    {
+      "field": "status",
+      "type": "string",
+      "description": "Overall status of the API response",
+      "validations": {
+        "allowedValues": ["success", "error", "failed"]
+      }
+    },
+    {
+      "field": "requestId",
+      "type": "string",
+      "description": "Unique identifier for the API request"
+    },
+    {
+      "field": "type",
+      "type": "string",
+      "description": "Type of verification performed",
+      "validations": {
+        "allowedValues": ["point", "bulk"]
+      }
+    },
+    {
+      "field": "serviceStatusCode",
+      "type": "integer",
+      "description": "HTTP status code for the service response"
+    },
+    {
+      "field": "data",
+      "type": "object",
+      "description": "Bank account verification result data",
+      "properties": {
+        "accountExists": {
+          "type": "boolean",
+          "description": "Indicates if the bank account exists"
+        },
+        "accountStatus": {
+          "type": "string",
+          "description": "Status of the bank account",
+          "validations": {
+            "allowedValues": ["valid", "invalid", "dormant", "closed"]
+          }
+        },
+        "accountStatusCode": {
+          "type": "string",
+          "description": "Detailed status code for account verification"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the account holder as per bank records"
+        },
+        "bankName": {
+          "type": "string",
+          "description": "Name of the bank"
+        },
+        "ifsc": {
+          "type": "string",
+          "description": "IFSC code of the bank branch"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Bank branch name"
+        },
+        "city": {
+          "type": "string",
+          "description": "City where the bank branch is located"
+        },
+        "state": {
+          "type": "string",
+          "description": "State where the bank branch is located"
+        },
+        "address": {
+          "type": "string",
+          "description": "Complete address of the bank branch"
+        },
+        "micr": {
+          "type": "string",
+          "description": "MICR code of the bank branch"
+        },
+        "refId": {
+          "type": "string",
+          "description": "Reference ID for the penny drop transaction"
+        },
+        "utr": {
+          "type": "string",
+          "description": "Unique Transaction Reference number"
+        }
+      }
+    },
+    {
+      "field": "vendorResponse",
+      "type": "array",
+      "description": "Details of vendor responses",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code from vendor"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the vendor"
+          },
+          "sequence": {
+            "type": "integer",
+            "description": "Sequence number of vendor in the workflow"
+          }
+        }
+      }
+    }
+  ],
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

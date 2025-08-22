@@ -1,0 +1,150 @@
+{
+  "category": "ONBOARDING INDIVIDUAL",
+  "service_name": "Aadhaar Number Verification (UIDAI)",
+  "description": "This service enables real-time verification of Aadhaar numbers directly through UIDAI (Unique Identification Authority of India) systems. It validates the authenticity of Aadhaar numbers and retrieves essential demographic information including state, gender, age range, and mobile number linkage status for comprehensive individual onboarding and KYC compliance.",
+  "llm_summary": "Aadhaar Number Verification (UIDAI) provides real-time validation of Aadhaar numbers through official UIDAI channels. Returns demographic details including state, gender, age range, and mobile linkage status for robust individual identity verification and onboarding workflows.",
+  "tags": [
+    "aadhaar verification",
+    "uidai integration",
+    "individual onboarding",
+    "demographic verification",
+    "identity validation",
+    "kyc compliance",
+    "government id verification",
+    "age verification",
+    "mobile linkage check"
+  ],
+  "use_cases": [
+    "Individual customer onboarding for financial institutions and banks.",
+    "Age verification for age-restricted services and products.",
+    "Demographic validation for insurance and healthcare applications.",
+    "Mobile number linkage verification for enhanced security.",
+    "Government compliance for services requiring Aadhaar verification.",
+    "Real-time identity validation for digital lending platforms.",
+    "State-wise customer segmentation and regional compliance."
+  ],
+  "request_schema": [
+    {
+      "field": "aadhaarNumber",
+      "type": "string",
+      "description": "12-digit Aadhaar number to verify",
+      "validations": {
+        "minLength": 12,
+        "maxLength": 12,
+        "pattern": "\\d{12}"
+      },
+      "required": true
+    },
+    {
+      "field": "consent",
+      "type": "boolean",
+      "description": "User consent for Aadhaar data processing and verification",
+      "validations": {
+        "allowedValues": [true, false]
+      },
+      "required": true
+    }
+  ],
+  "response_schema": [
+    {
+      "field": "status",
+      "type": "string",
+      "description": "Overall status of the API response",
+      "validations": {
+        "allowedValues": ["success", "error", "failed"]
+      }
+    },
+    {
+      "field": "requestId",
+      "type": "string",
+      "description": "Unique identifier for the API request"
+    },
+    {
+      "field": "type",
+      "type": "string",
+      "description": "Type of verification performed",
+      "validations": {
+        "allowedValues": ["point", "bulk"]
+      }
+    },
+    {
+      "field": "serviceStatusCode",
+      "type": "integer",
+      "description": "HTTP status code for the service response"
+    },
+    {
+      "field": "data",
+      "type": "object",
+      "description": "Verification result data",
+      "properties": {
+        "aadhaarNumber": {
+          "type": "string",
+          "description": "Masked Aadhaar number for privacy"
+        },
+        "lastDigits": {
+          "type": "string",
+          "description": "Last few digits of the Aadhaar number"
+        },
+        "state": {
+          "type": "string",
+          "description": "State associated with the Aadhaar number"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender of the Aadhaar holder",
+          "validations": {
+            "allowedValues": ["M", "F", "T"]
+          }
+        },
+        "isMobile": {
+          "type": "boolean",
+          "description": "Indicates if mobile number is linked to Aadhaar"
+        },
+        "ageRange": {
+          "type": "string",
+          "description": "Age range of the Aadhaar holder (e.g., '30-40')"
+        },
+        "lessInfo": {
+          "type": "string",
+          "description": "Indicates if limited information is available",
+          "validations": {
+            "allowedValues": ["true", "false"]
+          }
+        }
+      }
+    },
+    {
+      "field": "vendorResponse",
+      "type": "array",
+      "description": "Details of vendor responses",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "description": "HTTP status code from vendor"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the vendor"
+          },
+          "sequence": {
+            "type": "integer",
+            "description": "Sequence number of vendor in the workflow"
+          }
+        }
+      }
+    }
+  ],
+  "available_vendors": [
+    "OnyxWolf",
+    "SapphireSwan",
+    "CobaltEagle",
+    "SilverTiger",
+    "AzureRaven",
+    "ScarletPanther",
+    "EmeraldWhale",
+    "GoldenOtter",
+    "CrimsonFalcon"
+  ]
+}

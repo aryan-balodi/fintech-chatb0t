@@ -108,11 +108,22 @@ def chunk_service_json(service_json):
     if request_schema:
         schema_parts = ["Request Schema:"]
         for field in request_schema:
-            field_name = field.get('field', '')
-            field_desc = field.get('description', '')
-            field_type = field.get('type', '')
-            required = "required" if field.get('required', False) else "optional"
-            schema_parts.append(f"- {field_name} ({field_type}, {required}): {field_desc}")
+            try:
+                # Handle case where field is a dictionary
+                if isinstance(field, dict):
+                    field_name = field.get('field', '')
+                    field_desc = field.get('description', '')
+                    field_type = field.get('type', '')
+                    required = "required" if field.get('required', False) else "optional"
+                    schema_parts.append(f"- {field_name} ({field_type}, {required}): {field_desc}")
+                # Handle case where field is a string or other type
+                elif isinstance(field, str):
+                    schema_parts.append(f"- {field}")
+                else:
+                    schema_parts.append(f"- {str(field)}")
+            except Exception as e:
+                # Skip malformed fields
+                continue
         
         chunks.append(build_chunk("Request Schema", " | ".join(schema_parts), "request_schema"))
 
@@ -121,22 +132,26 @@ def chunk_service_json(service_json):
     if response_schema:
         schema_parts = ["Response Schema:"]
         for field in response_schema:
-            field_name = field.get('field', '')
-            field_desc = field.get('description', '')
-            field_type = field.get('type', '')
-            required = "required" if field.get('required', False) else "optional"
-            schema_parts.append(f"- {field_name} ({field_type}, {required}): {field_desc}")
+            try:
+                # Handle case where field is a dictionary
+                if isinstance(field, dict):
+                    field_name = field.get('field', '')
+                    field_desc = field.get('description', '')
+                    field_type = field.get('type', '')
+                    required = "required" if field.get('required', False) else "optional"
+                    schema_parts.append(f"- {field_name} ({field_type}, {required}): {field_desc}")
+                # Handle case where field is a string or other type
+                elif isinstance(field, str):
+                    schema_parts.append(f"- {field}")
+                else:
+                    schema_parts.append(f"- {str(field)}")
+            except Exception as e:
+                # Skip malformed fields
+                continue
         
         chunks.append(build_chunk("Response Schema", " | ".join(schema_parts), "response_schema"))
 
-    # 6. Examples (if available)
-    example_request = service_json.get("example_request")
-    if example_request:
-        chunks.append(build_chunk(
-            "Example Request",
-            f"Example Request: {json.dumps(example_request, indent=2)}",
-            "example_request"
-        ))
+    # 6. Example Response
 
     example_response = service_json.get("example_response")
     if example_response:

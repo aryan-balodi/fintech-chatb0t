@@ -1,55 +1,87 @@
-ALLOWED_CATEGORIES = [
-    "KYC/AML",
-    "Employment Verification",
-    "Onboarding"
-]
+import os
+import json
 
-ALLOWED_SERVICES = [
-    "PAN_ADVANCED",
-    "PAN_TO_GST",
-    "PAN_TO_UAN",
-    "MOBILE_TO_UAN",
-    "UAN_BASIC",
-    "GST_BASIC"
-]
+def load_knowledge_base_data():
+    """Dynamically load categories, services, and vendors from the knowledge base."""
+    knowledge_base_path = os.path.join(os.path.dirname(__file__), '..', 'knowledge_base')
+    
+    # Load services
+    services_path = os.path.join(knowledge_base_path, 'services')
+    services = []
+    categories = set()
+    category_to_services = {}
+    
+    if os.path.exists(services_path):
+        for filename in os.listdir(services_path):
+            if filename.endswith('.json'):
+                try:
+                    filepath = os.path.join(services_path, filename)
+                    with open(filepath, 'r', encoding='utf-8') as f:
+                        service_data = json.load(f)
+                        service_name = service_data.get('service_name', service_data.get('name', ''))
+                        category = service_data.get('category', 'Other')
+                        
+                        if service_name:
+                            services.append(service_name)
+                            categories.add(category)
+                            
+                            if category not in category_to_services:
+                                category_to_services[category] = []
+                            category_to_services[category].append(service_name)
+                except (json.JSONDecodeError, Exception):
+                    continue
+    
+    # Load vendors from vendor_health.json
+    vendors = []
+    vendor_health_path = os.path.join(knowledge_base_path, 'vendors', 'vendor_health.json')
+    
+    if os.path.exists(vendor_health_path):
+        try:
+            with open(vendor_health_path, 'r', encoding='utf-8') as f:
+                vendor_data = json.load(f)
+                if 'data' in vendor_data and 'rowData' in vendor_data['data']:
+                    for vendor in vendor_data['data']['rowData']:
+                        vendor_name = vendor.get('name', '')
+                        if vendor_name:
+                            vendors.append(vendor_name)
+        except (json.JSONDecodeError, Exception):
+            pass
+    
+    return list(categories), services, dict(category_to_services), vendors
 
-CATEGORY_TO_SERVICES = {
-    "KYC/AML": ["PAN_ADVANCED"],
-    "Employment Verification": ["PAN_TO_UAN", "UAN_BASIC", "MOBILE_TO_UAN"],
-    "Onboarding": ["GST_BASIC", "PAN_TO_GST", "PAN_ADVANCED"]
-}
+# Load dynamic data from knowledge base
+ALLOWED_CATEGORIES, ALLOWED_SERVICES, CATEGORY_TO_SERVICES, ALLOWED_VENDORS = load_knowledge_base_data()
 
-ALLOWED_VENDORS = [
-    "AzureRaven",
-    "EmeraldWhale",
-    "ScarletPanther",
-    "GoldenOtter",
-    "CrimsonFalcon",
-    "SapphireSwan",
-    "OnyxWolf",
-    "CobaltEagle",
-    "SilverTiger"
-]
-
+# Health metrics that can be used (these are standard vendor metrics)
 ALLOWED_HEALTH_METRICS = [
-    "total_transactions",
-    "success_rate",
-    "user_side_issues",
-    "twoxx_count",
-    "fourxx_count",
-    "fivexx_count",
+    "serialNumber",
+    "name", 
+    "totalTransactions",
+    "successRate",
+    "userSideIssues",
+    "twoXX",
+    "fourXX", 
+    "fiveXX",
     "avgLatency",
     "p50",
     "p75",
     "p90",
-    "p9",
-    "p99" 
+    "p95",
+    "p99"
 ]
 
 ALLOWED_CATEGORIES_STR = ", ".join(ALLOWED_CATEGORIES)
 ALLOWED_SERVICES_STR = ", ".join(ALLOWED_SERVICES)
 ALLOWED_VENDORS_STR = ", ".join(ALLOWED_VENDORS)
 ALLOWED_HEALTH_METRICS_STR = ", ".join(ALLOWED_HEALTH_METRICS)
+
+def format_category_services():
+    """Format the category-to-services mapping for prompt inclusion."""
+    formatted = []
+    for category, services in CATEGORY_TO_SERVICES.items():
+        services_list = ', '.join(services)
+        formatted.append(f"  • {category}: {services_list}")
+    return '\n'.join(formatted)
 
 
 STAGE_INSTRUCTIONS = {
@@ -61,18 +93,22 @@ STAGE_1: CATEGORY IDENTIFICATION AND SELECTION
 - PRESENT THE AVAILABLE CATEGORIES FROM THE PLATFORM.
 - HELP THE USER SELECT ONE CATEGORY.
 - CONFIRM THEIR SELECTION BEFORE PROCEEDING.
+- DO NOT ASK ABOUT OR MENTION SPECIFIC SERVICES - ONLY FOCUS ON CATEGORY SELECTION.
+- DO NOT PROCEED TO SERVICE SELECTION UNTIL THE USER EXPLICITLY CONFIRMS THEIR CATEGORY CHOICE.
 - ONLY PROCEED TO STAGE_2 AFTER USER EXPLICITLY CONFIRMS THEIR CATEGORY CHOICE.
 """,
     "STAGE_2": f"""
 STAGE_2: SERVICE IDENTIFICATION AND SELECTION
 - BASED ON THE SELECTED CATEGORY, RECOMMEND ONLY THE FINTECH SERVICE(S) THAT BELONG TO THAT SPECIFIC CATEGORY.
-- ONLY CONSIDER THESE SERVICES: {ALLOWED_SERVICES_STR}.
-- FILTER SERVICES BY CATEGORY: 
-  * KYC/AML services: PAN_ADVANCED
-  * Employment Verification services: PAN_TO_UAN, UAN_BASIC, MOBILE_TO_UAN  
-  * Onboarding services: PAN_TO_GST, PAN_ADVANCED, GST_BASIC
+- AVAILABLE CATEGORIES AND THEIR SERVICES:
+{format_category_services()}
+- EXTRACT THE SELECTED CATEGORY FROM THE CONVERSATION CONTEXT.
+- LIST ALL SERVICES FOR THE SELECTED CATEGORY (AS SHOWN ABOVE) - DO NOT MISS ANY SERVICES.
+- ONLY USE THE SERVICES PROVIDED IN THE KNOWLEDGE BASE CONTEXT BELOW.
+- DO NOT RECOMMEND ANY SERVICES NOT EXPLICITLY MENTIONED IN THE PROVIDED CONTEXT.
 - ASK THE USER ABOUT THEIR SPECIFIC USE CASE OR REQUIREMENTS TO RECOMMEND THE MOST SUITABLE SERVICE.
 - PROVIDE BRIEF DESCRIPTIONS FOR EACH RELEVANT SERVICE BASED ON THE KNOWLEDGE BASE.
+- ENSURE ALL SERVICES AVAILABLE IN THE SELECTED CATEGORY ARE PRESENTED TO THE USER.
 - ASK THE USER TO CHOOSE THE SERVICE THEY WANT TO PROCEED WITH.
 - CONFIRM THEIR CHOICE.
 - ONLY PROCEED TO STAGE_3 AFTER USER EXPLICITLY CONFIRMS THEIR SERVICE CHOICE.
@@ -88,35 +124,64 @@ STAGE_3: VENDOR CHOOSING AND FINALIZATION
 - PROVIDE SPECIFIC METRICS FROM THE KNOWLEDGE BASE TO SUPPORT YOUR RECOMMENDATIONS.
 - DO NOT DISCUSS VENDOR METRICS LIKE PRICING, INTEGRATION METHODS AND OTHERS NOT MENTIONED TO YOU IN YOUR GIVEN LIST.
 - DISCUSS VENDOR OPTIONS WITH THE USER AND HELP FINALIZE THE VENDOR SELECTION.
-- ONLY PROCEED TO STAGE_4 AFTER USER EXPLICITLY CONFIRMS THEIR VENDOR CHOICE.
+- AFTER USER EXPLICITLY CONFIRMS THEIR VENDOR CHOICE, DISPLAY AN ASCII FLOW CHART SHOWING THE VENDOR HIERARCHY:
+    * THE SELECTED VENDOR IN THE TOP BOX (RANK 1)
+    * THE SECOND BEST VENDOR DIRECTLY BELOW IT (RANK 2)
+    * THE THIRD BEST VENDOR BELOW THE SECOND (RANK 3)
+    * USE SIMPLE ASCII CHARACTERS TO CREATE A VERTICAL HIERARCHY
+- ONLY PROCEED TO STAGE_4 AFTER USER EXPLICITLY CONFIRMS THEIR VENDOR CHOICE AND THE FLOW CHART IS DISPLAYED.
+
+EXAMPLE ASCII FLOW CHART FORMAT:
+```
+┌─────────────────────┐
+│    RANK 1: PRIMARY  │
+│    SELECTED VENDOR  │
+└─────────────────────┘
+           │
+           ▼
+┌─────────────────────┐
+│    RANK 2: BACKUP   │
+│    SECOND CHOICE    │
+└─────────────────────┘
+           │
+           ▼
+┌─────────────────────┐
+│    RANK 3: THIRD    │
+│    ALTERNATIVE      │
+└─────────────────────┘
+```
 """,
     "STAGE_4": f"""
 STAGE_4: WORKFLOW GENERATION
+- THE USER HAS EXPLICITLY SELECTED THEIR PREFERRED VENDOR - USE THAT AS THE PRIMARY VENDOR.
 - GENERATE A JSON OBJECT THAT REPRESENTS THE FINAL API REQUEST TO YOUR PLATFORM.
 - THE JSON MUST INCLUDE:
     - THE SELECTED SERVICE.
     - THE USER'S PRIORITIES.
-    - A RANKED LIST OF VENDORS IN DECREASING ORDER OF RELEVANCE ACCORDING TO THE USER'S MENTIONED PREFERENCES.
-    - A BACKUP VENDOR.
+    - THE USER'S EXPLICITLY CHOSEN VENDOR AS THE PRIMARY VENDOR.
+    - A RANKED LIST OF ONLY THE TOP 2 OTHER VENDORS IN DECREASING ORDER OF RELEVANCE ACCORDING TO THE USER'S MENTIONED PREFERENCES (EXCLUDING THE SELECTED VENDOR).
+    - A BACKUP VENDOR (THE BEST OPTION FROM THE RANKED LIST).
     - WORKFLOW GENERATION WITH THE VALUE "https://testapi.tenacio.io/api/v1/worklow/".
 - PROVIDE A CONCISE, FACT-BASED EXPLANATION FOR YOUR RECOMMENDATIONS.
 - THIS JSON WILL BE SENT AS A POST REQUEST TO YOUR PLATFORM TO CREATE THE WORKFLOW.
 - DO NOT DISCUSS INTEGRATION STEPS, DOCUMENTATION, OR PROCESSES - ONLY PROVIDE THE JSON OUTPUT.
+- IMPORTANT: RESPECT THE USER'S VENDOR CHOICE - DO NOT OVERRIDE THEIR SELECTION.
+- LIMIT THE RANKED VENDORS TO ONLY 2 ADDITIONAL VENDORS AND 1 BACKUP VENDOR.
 
 EXAMPLE JSON STRUCTURE:
 
 {{
   "selected_service": "PAN_ADVANCED",
+  "selected_vendor": "AzureRaven",
   "user_priorities": {{
     "latency": "low",
     "success_rate": "high"
   }},
   "ranked_vendors": [
-    "AzureRaven",
     "EmeraldWhale",
     "ScarletPanther"
   ],
-  "backup_vendor": "GoldenOtter",
+  "backup_vendor": "EmeraldWhale",
   "workflow_generation": "https://testapi.tenacio.io/api/v1/worklow/"
 }}
 """
@@ -157,6 +222,8 @@ IMPORTANT_REMINDER = """
 - DO NOT DISCUSS INTEGRATION STEPS, DOCUMENTATION, API KEYS, OR TECHNICAL PROCESSES.
 - DO NOT PROVIDE FAKE OR MADE-UP METRICS - ONLY USE DATA FROM THE KNOWLEDGE BASE.
 - DO NOT TALK ABOUT VENDOR REPUTATION, CUSTOMER SUPPORT, OR PRICING UNLESS EXPLICITLY PROVIDED IN THE DATA.
+- WHEN IN STAGE_2, ONLY RECOMMEND SERVICES THAT ARE EXPLICITLY MENTIONED IN THE PROVIDED KNOWLEDGE BASE CONTEXT.
+- DO NOT MIX SERVICES FROM DIFFERENT CATEGORIES - STICK TO THE SELECTED CATEGORY ONLY.
 """
 
 CONSTRAINTS_AND_FORMATTING = f"""
@@ -193,10 +260,51 @@ def build_prompt(user_query, stage, session_context="", knowledge_chunks=""):
         f"{STAGE_INSTRUCTIONS.get(stage, '')}\n"
         f"{CONSTRAINTS_AND_FORMATTING}\n"
     )
+    
+    # For STAGE_4, extract and highlight the user's vendor selection
+    if stage == "STAGE_4" and session_context:
+        import re
+        # Look for vendor selection in the conversation
+        vendor_selection_patterns = [
+            r'proceed\s+with\s+(\w+)',
+            r'select\s+(\w+)',
+            r'choose\s+(\w+)',
+            r'want\s+(\w+)',
+            r'go\s+with\s+(\w+)',
+            r'pick\s+(\w+)'
+        ]
+        
+        selected_vendor = None
+        for pattern in vendor_selection_patterns:
+            matches = re.findall(pattern, session_context, re.IGNORECASE)
+            if matches:
+                # Check if the match is a known vendor (case-insensitive)
+                for vendor in ALLOWED_VENDORS:
+                    for match in matches:
+                        if vendor.lower() == match.lower():
+                            selected_vendor = vendor
+                            break
+                    if selected_vendor:
+                        break
+                if selected_vendor:
+                    break
+        
+        if selected_vendor:
+            prompt += f"\n**IMPORTANT: THE USER HAS EXPLICITLY SELECTED '{selected_vendor}' AS THEIR PREFERRED VENDOR. USE THIS AS THE PRIMARY VENDOR IN YOUR JSON OUTPUT.**\n\n"
+    
     if session_context:
         prompt += f"CONVERSATION SO FAR:\n{session_context}\n\n"
     if knowledge_chunks:
-        prompt += f"RELEVANT CONTEXT FROM KNOWLEDGE BASE:\n{knowledge_chunks}\n\n"
+        print(f"DEBUG BUILD_PROMPT: Knowledge chunks being sent to LLM:")
+        # For STAGE_4, we only need minimal context since user has already selected everything
+        if stage == "STAGE_4":
+            # Truncate knowledge chunks for STAGE_4 to reduce token usage
+            truncated_chunks = knowledge_chunks[:200] + "..." if len(knowledge_chunks) > 200 else knowledge_chunks
+            print(f"DEBUG BUILD_PROMPT: {truncated_chunks}")
+            prompt += f"RELEVANT CONTEXT FROM KNOWLEDGE BASE:\n{truncated_chunks}\n\n"
+        else:
+            print(f"DEBUG BUILD_PROMPT: {knowledge_chunks[:500]}...")
+            prompt += f"RELEVANT CONTEXT FROM KNOWLEDGE BASE:\n{knowledge_chunks}\n\n"
         prompt += "IMPORTANT: USE ONLY THE DATA PROVIDED IN THE KNOWLEDGE BASE ABOVE. DO NOT FABRICATE ANY INFORMATION.\n\n"
     prompt += f"USER'S REQUEST: {user_query}\n"
     prompt += f"RESPOND USING THE SPECIFIED FORMATTING AND OUTPUT REQUIREMENTS ABOVE. REMEMBER YOU ARE IN {stage}.\n"

@@ -34,22 +34,69 @@ class SessionManager:
         
         # Stage progression logic
         if current_stage == "STAGE_1":
-            # Check if category selection is complete
-            if any(category in response.lower() for category in ["kyc/aml", "employment verification", "onboarding"]):
-                if "confirm" in response.lower() and any(word in user_input.lower() for word in ["yes", "correct", "right", "okay", "confirm"]):
-                    return "STAGE_2"
+            # Check if category selection is confirmed by the user
+            # Only move to STAGE_2 if the user explicitly confirms after seeing category options
+            confirmation_words = ["yes", "correct", "right", "okay", "confirm", "proceed", "that's right", "exactly"]
+            
+            # Check if the bot has presented categories in its previous response
+            bot_presented_categories = any(cat.lower() in response.lower() for cat in [
+                "asset verification", "alternate data suite", "employment verification", 
+                "onboarding", "kyc/aml", "banking", "utility bill", "credit risk"
+            ])
+            
+            # Check if user is confirming a category choice
+            user_confirming = any(word in user_input.lower() for word in confirmation_words)
+            
+            # Only advance if bot presented categories AND user explicitly confirmed
+            if bot_presented_categories and user_confirming:
+                return "STAGE_2"
+            
+            # Alternative: if there's a JSON output with category (final confirmation)
+            if "JSON_OUTPUT" in response and "category" in response:
+                return "STAGE_2"
         
         elif current_stage == "STAGE_2":
-            # Check if service selection is complete
-            if any(service in response.lower() for service in ["pan_advanced", "pan_to_gst", "pan_to_uan", "mobile_to_uan", "uan_basic", "gst_basic"]):
-                if "confirm" in response.lower() and any(word in user_input.lower() for word in ["yes", "correct", "right", "okay", "confirm"]):
-                    return "STAGE_3"
+            # Check if service selection is confirmed by the user
+            confirmation_words = ["yes", "correct", "right", "okay", "confirm", "proceed", "that's right", "exactly"]
+            
+            # Check if the bot has presented services in its previous response
+            bot_presented_services = any(service.lower() in response.lower() for service in [
+                "rc verification", "mobile to rc", "pan", "verification", "service"
+            ])
+            
+            # Check if user is confirming a service choice or selecting by number
+            user_confirming = any(word in user_input.lower() for word in confirmation_words)
+            user_selecting_number = any(char.isdigit() for char in user_input)
+            
+            # Only advance if bot presented services AND user explicitly confirmed or selected
+            if bot_presented_services and (user_confirming or user_selecting_number):
+                return "STAGE_3"
+            
+            # Alternative: if there's a JSON output with service (final confirmation)
+            if "JSON_OUTPUT" in response and "service" in response:
+                return "STAGE_3"
         
         elif current_stage == "STAGE_3":
-            # Check if vendor selection is complete
-            if any(vendor in response.lower() for vendor in ["azureraven", "emeraldwhale", "scarletpanther", "goldenotter", "crimsonfalcon", "sapphireswan", "onyxwolf", "cobalteagle", "silvertiger"]):
-                if "confirm" in response.lower() and any(word in user_input.lower() for word in ["yes", "correct", "right", "okay", "confirm"]):
-                    return "STAGE_4"
+            # Check if vendor selection is confirmed by the user
+            confirmation_words = ["yes", "correct", "right", "okay", "confirm", "proceed", "that's right", "exactly"]
+            
+            # Check if the bot has presented vendors in its previous response
+            bot_presented_vendors = any(vendor.lower() in response.lower() for vendor in [
+                "azureraven", "emeraldwhale", "scarletpanther", "goldenotter", "crimsonfalcon", 
+                "sapphireswan", "onyxwolf", "cobalteagle", "silvertiger"
+            ])
+            
+            # Check if user is confirming a vendor choice or selecting by number
+            user_confirming = any(word in user_input.lower() for word in confirmation_words)
+            user_selecting_number = any(char.isdigit() for char in user_input)
+            
+            # Only advance if bot presented vendors AND user explicitly confirmed or selected
+            if bot_presented_vendors and (user_confirming or user_selecting_number):
+                return "STAGE_4"
+            
+            # Alternative: if there's a JSON output with vendor (final confirmation)
+            if "JSON_OUTPUT" in response and "vendor" in response:
+                return "STAGE_4"
         
         elif current_stage == "STAGE_4":
             # STAGE_4 is the final stage - never go back
